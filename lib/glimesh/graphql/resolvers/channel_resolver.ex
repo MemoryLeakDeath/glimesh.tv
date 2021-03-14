@@ -9,8 +9,8 @@ defmodule Glimesh.Resolvers.ChannelResolver do
   alias Glimesh.ChannelLookups
   alias Glimesh.Payments
   alias Glimesh.Payments.Subscription
-  alias Glimesh.Streams
   alias Glimesh.Repo
+  alias Glimesh.Streams
 
   @error_not_found "Could not find resource"
   @error_access_denied "Access denied"
