@@ -10,6 +10,7 @@ defmodule Glimesh.Resolvers.ChannelResolver do
   alias Glimesh.Payments
   alias Glimesh.Payments.Subscription
   alias Glimesh.Streams
+  alias Glimesh.Repo
 
   @error_not_found "Could not find resource"
   @error_access_denied "Access denied"
@@ -18,18 +19,18 @@ defmodule Glimesh.Resolvers.ChannelResolver do
 
   def all_channels(%{status: status, category_slug: category_slug}, _) do
     if category = ChannelCategories.get_category(category_slug) do
-      {:ok, ChannelLookups.list_channels(status: status, category_id: category.id)}
+      {:ok, ChannelLookups.list_channels(status: status, category_id: category.id) |> Repo.all()}
     else
       {:error, @error_not_found}
     end
   end
 
   def all_channels(%{status: status}, _) do
-    {:ok, ChannelLookups.list_channels(status: status)}
+    {:ok, ChannelLookups.list_channels(status: status) |> Repo.all()}
   end
 
   def all_channels(_, _) do
-    {:ok, ChannelLookups.list_channels()}
+    {:ok, ChannelLookups.list_channels() |> Repo.all()}
   end
 
   def find_channel(%{id: id}, _) do
