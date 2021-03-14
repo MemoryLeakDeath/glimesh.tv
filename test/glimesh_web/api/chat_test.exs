@@ -97,6 +97,35 @@ defmodule GlimeshWeb.Api.ChatTest do
              }
     end
 
+    test "can send a chat message in different channel", %{
+      conn: conn,
+      user: user
+    } do
+      streamer = streamer_fixture()
+
+      conn =
+        post(conn, "/api", %{
+          "query" => @create_chat_message_query,
+          "variables" => %{
+            channelId: "#{streamer.channel.id}",
+            message: %{
+              message: "Hello world"
+            }
+          }
+        })
+
+      assert json_response(conn, 200)["data"]["createChatMessage"] == %{
+               "message" => "Hello world",
+               "user" => %{
+                 "username" => user.username
+               },
+               "tokens" => [
+                 %{"type" => "text", "text" => "Hello world"}
+               ],
+               "isMod" => false
+             }
+    end
+
     test "can send a emote based message", %{conn: conn, user: user, channel: channel} do
       conn =
         post(conn, "/api", %{
