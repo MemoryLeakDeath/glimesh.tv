@@ -1,4 +1,4 @@
-defmodule GlimeshWeb.Api.ChatTest do
+defmodule GlimeshWeb.ApiNext.ChatTest do
   use GlimeshWeb.ConnCase
 
   import Glimesh.AccountsFixtures
@@ -20,6 +20,7 @@ defmodule GlimeshWeb.Api.ChatTest do
           url
         }
       }
+      isMod
     }
   }
   """
@@ -47,7 +48,7 @@ defmodule GlimeshWeb.Api.ChatTest do
 
     test "cannot send a chat message", %{conn: conn, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -74,7 +75,7 @@ defmodule GlimeshWeb.Api.ChatTest do
 
     test "can send a chat message", %{conn: conn, user: user, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -91,13 +92,43 @@ defmodule GlimeshWeb.Api.ChatTest do
                },
                "tokens" => [
                  %{"type" => "text", "text" => "Hello world"}
-               ]
+               ],
+               "isMod" => true
+             }
+    end
+
+    test "can send a chat message in different channel", %{
+      conn: conn,
+      user: user
+    } do
+      streamer = streamer_fixture()
+
+      conn =
+        post(conn, "/apinext", %{
+          "query" => @create_chat_message_query,
+          "variables" => %{
+            channelId: "#{streamer.channel.id}",
+            message: %{
+              message: "Hello world"
+            }
+          }
+        })
+
+      assert json_response(conn, 200)["data"]["createChatMessage"] == %{
+               "message" => "Hello world",
+               "user" => %{
+                 "username" => user.username
+               },
+               "tokens" => [
+                 %{"type" => "text", "text" => "Hello world"}
+               ],
+               "isMod" => false
              }
     end
 
     test "can send a emote based message", %{conn: conn, user: user, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -121,7 +152,8 @@ defmodule GlimeshWeb.Api.ChatTest do
                    "url" => "http://localhost:4002/emotes/svg/glimwow.svg"
                  },
                  %{"type" => "text", "text" => " world!"}
-               ]
+               ],
+               "isMod" => true
              }
     end
 
@@ -129,7 +161,7 @@ defmodule GlimeshWeb.Api.ChatTest do
       user_to_ban = user_fixture()
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @ban_user_mutation,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -157,7 +189,7 @@ defmodule GlimeshWeb.Api.ChatTest do
 
     test "can send a chat message", %{conn: conn, user: user, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -174,7 +206,8 @@ defmodule GlimeshWeb.Api.ChatTest do
                },
                "tokens" => [
                  %{"type" => "text", "text" => "Hello world"}
-               ]
+               ],
+               "isMod" => true
              }
     end
   end
