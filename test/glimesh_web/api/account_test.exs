@@ -145,7 +145,7 @@ defmodule GlimeshWeb.Api.AccountTest do
 
     test "returns myself", %{conn: conn, user: user} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @myself_query
         })
 
@@ -156,7 +156,7 @@ defmodule GlimeshWeb.Api.AccountTest do
 
     test "returns all users", %{conn: conn, user: user} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @users_query
         })
 
@@ -172,7 +172,7 @@ defmodule GlimeshWeb.Api.AccountTest do
 
     test "returns a user from username", %{conn: conn, user: user} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @user_query_string,
           "variables" => %{username: user.username}
         })
@@ -184,7 +184,7 @@ defmodule GlimeshWeb.Api.AccountTest do
 
     test "returns a user from id", %{conn: conn, user: user} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @user_query_number,
           "variables" => %{id: user.id}
         })
@@ -199,7 +199,7 @@ defmodule GlimeshWeb.Api.AccountTest do
       AccountFollows.follow(streamer, streamer)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @follower_query_list
         })
 
@@ -218,7 +218,7 @@ defmodule GlimeshWeb.Api.AccountTest do
       AccountFollows.follow(streamer, streamer)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @follower_query_streamname_username_single,
           "variables" => %{username: streamer.username}
         })
@@ -237,7 +237,7 @@ defmodule GlimeshWeb.Api.AccountTest do
       AccountFollows.follow(streamer, streamer)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @follower_query_username_list,
           "variables" => %{username: streamer.username}
         })
@@ -256,7 +256,7 @@ defmodule GlimeshWeb.Api.AccountTest do
       AccountFollows.follow(streamer, streamer)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @follower_query_streamname_list,
           "variables" => %{username: streamer.username}
         })
@@ -275,7 +275,7 @@ defmodule GlimeshWeb.Api.AccountTest do
       AccountFollows.follow(streamer, streamer)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @follower_query_streamid_userid_single,
           "variables" => %{user_id: streamer.id}
         })
@@ -294,7 +294,7 @@ defmodule GlimeshWeb.Api.AccountTest do
       AccountFollows.follow(streamer, streamer)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @follower_query_userid_list,
           "variables" => %{user_id: streamer.id}
         })
@@ -313,7 +313,7 @@ defmodule GlimeshWeb.Api.AccountTest do
       AccountFollows.follow(streamer, streamer)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @follower_query_streamid_list,
           "variables" => %{user_id: streamer.id}
         })

@@ -1,12 +1,13 @@
-defmodule Glimesh.Schema.AccountTypes do
+defmodule Glimesh.SchemaNext.AccountTypes do
   @moduledoc false
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
 
   import Absinthe.Resolution.Helpers
 
   alias Glimesh.Avatar
   alias Glimesh.Repo
-  alias Glimesh.Resolvers.AccountResolver
+  alias Glimesh.ResolversNext.AccountResolver
 
   object :accounts_queries do
     @desc "Get yourself"
@@ -15,21 +16,26 @@ defmodule Glimesh.Schema.AccountTypes do
     end
 
     @desc "List all users"
-    field :users, list_of(:user) do
+    connection field :users, node_type: :user, paginate: :forward do
       resolve(&AccountResolver.all_users/2)
     end
 
     @desc "Query individual user"
     field :user, :user do
       arg(:id, :integer)
-      arg(:username, :string)
+      arg(:username, :string, deprecate: "Use ids for future as these will be removed later")
       resolve(&AccountResolver.find_user/2)
     end
 
     @desc "List all follows or followers"
-    field :followers, list_of(:follower) do
-      arg(:streamer_username, :string)
-      arg(:user_username, :string)
+    connection field :followers, node_type: :follower, paginate: :forward do
+      arg(:streamer_username, :string,
+        deprecate: "Use ids for future as these will be removed later"
+      )
+
+      arg(:user_username, :string, deprecate: "Use ids for future as these will be removed later")
+      arg(:streamer_id, :integer)
+      arg(:user_id, :integer)
       resolve(&AccountResolver.all_followers/2)
     end
   end
@@ -122,6 +128,23 @@ defmodule Glimesh.Schema.AccountTypes do
       description: "HTML version of the user's profile, should be safe for rendering directly"
   end
 
+  connection node_type: :user do
+    field :count, :integer do
+      resolve(fn
+        _, %{source: conn} ->
+          {:ok, length(conn.edges)}
+      end)
+    end
+
+    edge do
+      field :node, :user do
+        resolve(fn %{node: message}, _args, _info ->
+          {:ok, message}
+        end)
+      end
+    end
+  end
+
   @desc "A linked social account for a Glimesh user."
   object :user_social do
     field :id, :id
@@ -147,5 +170,22 @@ defmodule Glimesh.Schema.AccountTypes do
 
     field :inserted_at, non_null(:naive_datetime)
     field :updated_at, non_null(:naive_datetime)
+  end
+
+  connection node_type: :follower do
+    field :count, :integer do
+      resolve(fn
+        _, %{source: conn} ->
+          {:ok, length(conn.edges)}
+      end)
+    end
+
+    edge do
+      field :node, :follower do
+        resolve(fn %{node: message}, _args, _info ->
+          {:ok, message}
+        end)
+      end
+    end
   end
 end

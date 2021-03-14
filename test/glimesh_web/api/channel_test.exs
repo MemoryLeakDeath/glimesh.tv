@@ -50,7 +50,7 @@ defmodule GlimeshWeb.Api.ChannelTest do
 
     test "returns all channels", %{conn: conn, user: user} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @channels_query
         })
 
@@ -73,7 +73,7 @@ defmodule GlimeshWeb.Api.ChannelTest do
 
     test "returns a channel by username", %{conn: conn, user: user} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @channel_query,
           "variables" => %{username: user.username}
         })
@@ -95,7 +95,7 @@ defmodule GlimeshWeb.Api.ChannelTest do
 
     test "returns a channel by user id", %{conn: conn, user: user} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @channel_userid_query,
           "variables" => %{user_id: user.id}
         })
@@ -143,7 +143,7 @@ defmodule GlimeshWeb.Api.ChannelTest do
 
     test "returns all categories", %{conn: conn} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @categories_query
         })
 
@@ -155,7 +155,7 @@ defmodule GlimeshWeb.Api.ChannelTest do
 
     test "returns a category", %{conn: conn} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @category_query,
           "variables" => %{slug: "gaming"}
         })

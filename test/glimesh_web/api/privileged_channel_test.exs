@@ -76,7 +76,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
       user: user
     } do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @unauthorized_stream_key_query,
           "variables" => %{username: user.username}
         })
@@ -95,7 +95,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
       channel: channel
     } do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @channel_by_hmac_key_query,
           "variables" => %{hmacKey: channel.hmac_key}
         })
@@ -114,7 +114,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
       channel: channel
     } do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @start_stream_query,
           "variables" => %{channelId: "#{channel.id}"}
         })
@@ -134,7 +134,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
 
     test "returns a channel by id", %{conn: conn, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @channel_by_id_query,
           "variables" => %{id: channel.id}
         })
@@ -151,7 +151,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
 
     test "returns a channel by hmacKey", %{conn: conn, user: user, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @channel_by_hmac_key_query,
           "variables" => %{hmacKey: channel.hmac_key}
         })
@@ -174,7 +174,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
 
     test "can start stream", %{conn: conn, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @start_stream_query,
           "variables" => %{channelId: "#{channel.id}"}
         })
@@ -188,7 +188,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
       {:ok, stream} = Streams.start_stream(channel)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @end_stream_by_stream_id_query,
           "variables" => %{streamId: "#{stream.id}"}
         })
@@ -207,7 +207,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
       |> Glimesh.Repo.update!()
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @start_stream_query,
           "variables" => %{channelId: "#{channel.id}"}
         })
@@ -225,7 +225,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
       {:ok, stream} = Streams.start_stream(channel)
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @log_stream_metadata_query,
           "variables" => %{
             streamId: "#{stream.id}",
@@ -261,7 +261,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
       }
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @upload_stream_thumbnail,
           "variables" => %{
             streamId: "#{stream.id}",
@@ -278,7 +278,7 @@ defmodule GlimeshWeb.Api.PrivilegedChannelTest do
 
     test "returns normal errors", %{conn: conn} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @start_stream_query,
           "variables" => %{channelId: "0"}
         })

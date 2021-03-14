@@ -1,12 +1,13 @@
-defmodule Glimesh.Schema.ChannelTypes do
+defmodule Glimesh.SchemaNext.ChannelTypes do
   @moduledoc false
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
 
   import Absinthe.Resolution.Helpers
   import_types(Absinthe.Plug.Types)
 
   alias Glimesh.Repo
-  alias Glimesh.Resolvers.ChannelResolver
+  alias Glimesh.ResolversNext.ChannelResolver
   alias Glimesh.Streams
 
   input_object :stream_metadata_input do
@@ -32,7 +33,7 @@ defmodule Glimesh.Schema.ChannelTypes do
 
   object :streams_queries do
     @desc "List all channels"
-    field :channels, list_of(:channel) do
+    connection field :channels, node_type: :channel, paginate: :forward do
       arg(:status, :channel_status)
       arg(:category_slug, :string)
 
@@ -42,7 +43,8 @@ defmodule Glimesh.Schema.ChannelTypes do
     @desc "Query individual channel"
     field :channel, :channel do
       arg(:id, :id)
-      arg(:username, :string)
+      arg(:username, :string, deprecate: "Use ids for future as these will be removed later")
+      arg(:user_id, :integer)
       arg(:hmac_key, :string)
       resolve(&ChannelResolver.find_channel/2)
     end
@@ -60,8 +62,13 @@ defmodule Glimesh.Schema.ChannelTypes do
 
     @desc "List all subscribers or subscribees"
     field :subscriptions, list_of(:sub) do
-      arg(:streamer_username, :string)
-      arg(:user_username, :string)
+      arg(:streamer_username, :string,
+        deprecate: "Use ids for future as these will be removed later"
+      )
+
+      arg(:user_username, :string, deprecate: "Use ids for future as these will be removed later")
+      arg(:streamer_id, :integer)
+      arg(:user_id, :integer)
       resolve(&ChannelResolver.all_subscriptions/2)
     end
   end
@@ -198,10 +205,22 @@ defmodule Glimesh.Schema.ChannelTypes do
     field :stream, :stream, resolve: dataloader(Repo)
 
     field :streamer, non_null(:user), resolve: dataloader(Repo)
-    field :chat_messages, list_of(:chat_message), resolve: dataloader(Repo)
-    field :bans, list_of(:channel_ban), resolve: dataloader(Repo)
-    field :moderators, list_of(:channel_moderator), resolve: dataloader(Repo)
-    field :moderation_logs, list_of(:channel_moderation_log), resolve: dataloader(Repo)
+
+    connection field :chat_messages, node_type: :chat_message, paginate: :forward do
+      resolve(&ChannelResolver.get_messages/2)
+    end
+
+    connection field :bans, node_type: :channel_ban, paginate: :forward do
+      resolve(&ChannelResolver.get_bans/2)
+    end
+
+    connection field :moderators, node_type: :channel_moderator, paginate: :forward do
+      resolve(&ChannelResolver.get_moderators/2)
+    end
+
+    connection field :moderation_logs, node_type: :channel_moderation_log, paginate: :forward do
+      resolve(&ChannelResolver.get_moderation_logs/2)
+    end
 
     field :user, non_null(:user),
       resolve: dataloader(Repo),
@@ -211,6 +230,23 @@ defmodule Glimesh.Schema.ChannelTypes do
 
     field :inserted_at, non_null(:naive_datetime)
     field :updated_at, non_null(:naive_datetime)
+  end
+
+  connection node_type: :channel do
+    field :count, :integer do
+      resolve(fn
+        _, %{source: conn} ->
+          {:ok, length(conn.edges)}
+      end)
+    end
+
+    edge do
+      field :node, :channel do
+        resolve(fn %{node: message}, _args, _info ->
+          {:ok, message}
+        end)
+      end
+    end
   end
 
   @desc "A stream is a single live stream in, either current or historical."

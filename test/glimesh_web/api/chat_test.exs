@@ -48,7 +48,7 @@ defmodule GlimeshWeb.Api.ChatTest do
 
     test "cannot send a chat message", %{conn: conn, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -75,7 +75,7 @@ defmodule GlimeshWeb.Api.ChatTest do
 
     test "can send a chat message", %{conn: conn, user: user, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -104,7 +104,7 @@ defmodule GlimeshWeb.Api.ChatTest do
       streamer = streamer_fixture()
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{streamer.channel.id}",
@@ -128,7 +128,7 @@ defmodule GlimeshWeb.Api.ChatTest do
 
     test "can send a emote based message", %{conn: conn, user: user, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -161,7 +161,7 @@ defmodule GlimeshWeb.Api.ChatTest do
       user_to_ban = user_fixture()
 
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @ban_user_mutation,
           "variables" => %{
             channelId: "#{channel.id}",
@@ -189,7 +189,7 @@ defmodule GlimeshWeb.Api.ChatTest do
 
     test "can send a chat message", %{conn: conn, user: user, channel: channel} do
       conn =
-        post(conn, "/api", %{
+        post(conn, "/apinext", %{
           "query" => @create_chat_message_query,
           "variables" => %{
             channelId: "#{channel.id}",

@@ -65,6 +65,16 @@ defmodule GlimeshWeb.Router do
       socket_url: {__MODULE__, :graphiql_socket_url}
   end
 
+  scope "/apinext" do
+    pipe_through :graphql
+
+    forward "/", Glimesh.Plug.GraphiQL,
+      schema: Glimesh.SchemaNext,
+      socket: GlimeshWeb.ApiSocket,
+      default_url: {__MODULE__, :graphiql_default_url},
+      socket_url: {__MODULE__, :graphiql_socket_url}
+  end
+
   ## Authentication routes
 
   scope "/", GlimeshWeb do
