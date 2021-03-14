@@ -140,7 +140,7 @@ defmodule GlimeshWeb.ApiNext.AccountTest do
   }
   """
 
-  describe "accounts api" do
+  describe "accounts apinew" do
     setup :register_and_set_user_token
 
     test "returns myself", %{conn: conn, user: user} do

@@ -68,7 +68,7 @@ defmodule GlimeshWeb.ApiNext.PrivilegedChannelTest do
   }
   """
 
-  describe "channel update apis are unavailable unless admin" do
+  describe "channel update apis are unavailable unless admin apinew" do
     setup [:register_and_set_user_token, :create_channel]
 
     test "does not return a stream key value unless user is admin", %{

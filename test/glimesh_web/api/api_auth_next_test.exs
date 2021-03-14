@@ -19,7 +19,7 @@ defmodule GlimeshWeb.ApiNext.ApiAuthTest do
   }
   """
 
-  describe "unauthenticated api access" do
+  describe "unauthenticated apinew access" do
     test "gets rejected", %{conn: conn} do
       conn = get(conn, "/apinext")
 
@@ -41,7 +41,7 @@ defmodule GlimeshWeb.ApiNext.ApiAuthTest do
     end
   end
 
-  describe "read-only api access with client id" do
+  describe "read-only apinew access with client id" do
     setup %{conn: conn} do
       user = user_fixture()
 
@@ -85,7 +85,7 @@ defmodule GlimeshWeb.ApiNext.ApiAuthTest do
     end
   end
 
-  describe "authenticated api access with login session" do
+  describe "authenticated apinew access with login session" do
     setup :register_and_log_in_admin_user
 
     test "gets accepted", %{conn: conn} do
@@ -108,7 +108,7 @@ defmodule GlimeshWeb.ApiNext.ApiAuthTest do
     end
   end
 
-  describe "authenticated api access with authorization header" do
+  describe "authenticated apinew access with authorization header" do
     setup :register_and_set_user_token
 
     test "gets accepted", %{conn: conn} do
@@ -131,7 +131,7 @@ defmodule GlimeshWeb.ApiNext.ApiAuthTest do
     end
   end
 
-  describe "weird other auth methods" do
+  describe "weird other auth methods apinew" do
     setup :register_and_set_user_token
 
     test "authenticated api access with lowercased authorization header gets accepted", %{

@@ -39,7 +39,7 @@ defmodule GlimeshWeb.ApiNext.ChatTest do
   }
   """
 
-  describe "chat api with user's access token without scope" do
+  describe "chat apinew with user's access token without scope" do
     setup [:create_user, :create_channel]
 
     setup context do
@@ -70,7 +70,7 @@ defmodule GlimeshWeb.ApiNext.ChatTest do
     end
   end
 
-  describe "chat api with user's access token" do
+  describe "chat apinew with user's access token" do
     setup [:register_and_set_user_token, :create_channel]
 
     test "can send a chat message", %{conn: conn, user: user, channel: channel} do
@@ -184,7 +184,7 @@ defmodule GlimeshWeb.ApiNext.ChatTest do
     end
   end
 
-  describe "chat api with app client credentials" do
+  describe "chat apinew with app client credentials" do
     setup [:register_and_set_user_token, :create_channel]
 
     test "can send a chat message", %{conn: conn, user: user, channel: channel} do

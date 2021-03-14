@@ -45,7 +45,7 @@ defmodule GlimeshWeb.ApiNext.ChannelTest do
   }
   """
 
-  describe "channels api" do
+  describe "channels apinew" do
     setup [:register_and_set_user_token, :create_channel]
 
     test "returns all channels", %{conn: conn, user: user} do
@@ -138,7 +138,7 @@ defmodule GlimeshWeb.ApiNext.ChannelTest do
   }
   """
 
-  describe "categories api" do
+  describe "categories apinew" do
     setup [:register_and_set_user_token, :create_tag]
 
     test "returns all categories", %{conn: conn} do
