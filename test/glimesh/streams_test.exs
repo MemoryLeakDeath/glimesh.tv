@@ -6,6 +6,7 @@ defmodule Glimesh.StreamsTest do
   alias Glimesh.AccountFollows
   alias Glimesh.ChannelLookups
   alias Glimesh.Streams
+  alias Glimesh.Repo
 
   describe "followers" do
     def followers_fixture do
@@ -52,6 +53,45 @@ defmodule Glimesh.StreamsTest do
 
       AccountFollows.follow(streamer, user)
       assert {:error, %Ecto.Changeset{}} = AccountFollows.follow(streamer, user)
+    end
+
+    test "list_all_follows/0 successfully returns data" do
+      streamer = streamer_fixture()
+      user = user_fixture()
+      AccountFollows.follow(streamer, user)
+
+      follows =
+        AccountFollows.list_all_follows()
+        |> Repo.all()
+        |> Repo.preload(:user)
+
+      assert Enum.map(follows, fn x -> x.user.username end) == [user.username]
+    end
+
+    test "list_followers/1 successfully returns data" do
+      streamer = streamer_fixture()
+      user = user_fixture()
+      AccountFollows.follow(streamer, user)
+
+      follows =
+        AccountFollows.list_followers(streamer)
+        |> Repo.all()
+        |> Repo.preload(:user)
+
+      assert Enum.map(follows, fn x -> x.user.username end) == [user.username]
+    end
+
+    test "list_following/1 successfully returns data" do
+      streamer = streamer_fixture()
+      user = user_fixture()
+      AccountFollows.follow(streamer, user)
+
+      follows =
+        AccountFollows.list_following(user)
+        |> Repo.all()
+        |> Repo.preload(:user)
+
+      assert Enum.map(follows, fn x -> x.user.username end) == [user.username]
     end
   end
 

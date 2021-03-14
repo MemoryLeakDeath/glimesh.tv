@@ -8,6 +8,7 @@ defmodule GlimeshWeb.Api.ChannelTest do
   @channels_query """
   query getChannels {
     channels(first: 200) {
+      count
       edges{
         node{
           title
@@ -31,6 +32,19 @@ defmodule GlimeshWeb.Api.ChannelTest do
   }
   """
 
+  @channel_userid_query """
+  query getChannel($user_id: Number!) {
+    channel(userId: $user_id) {
+      title
+      streamer { username }
+
+      tags {
+        name
+      }
+    }
+  }
+  """
+
   describe "channels api" do
     setup [:register_and_set_user_token, :create_channel]
 
@@ -43,6 +57,7 @@ defmodule GlimeshWeb.Api.ChannelTest do
       assert json_response(conn, 200) == %{
                "data" => %{
                  "channels" => %{
+                   "count" => 1,
                    "edges" => [
                      %{
                        "node" => %{
@@ -56,11 +71,33 @@ defmodule GlimeshWeb.Api.ChannelTest do
              }
     end
 
-    test "returns a channel", %{conn: conn, user: user} do
+    test "returns a channel by username", %{conn: conn, user: user} do
       conn =
         post(conn, "/api", %{
           "query" => @channel_query,
           "variables" => %{username: user.username}
+        })
+
+      assert json_response(conn, 200) == %{
+               "data" => %{
+                 "channel" => %{
+                   "title" => "Live Stream!",
+                   "streamer" => %{"username" => user.username},
+                   "tags" => [
+                     %{
+                       "name" => "World of Warcraft"
+                     }
+                   ]
+                 }
+               }
+             }
+    end
+
+    test "returns a channel by user id", %{conn: conn, user: user} do
+      conn =
+        post(conn, "/api", %{
+          "query" => @channel_userid_query,
+          "variables" => %{user_id: user.id}
         })
 
       assert json_response(conn, 200) == %{

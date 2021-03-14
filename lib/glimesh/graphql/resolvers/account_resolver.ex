@@ -105,7 +105,7 @@ defmodule Glimesh.Resolvers.AccountResolver do
 
     case all_followers(args) do
       {:ok, :query, resp} -> Connection.from_query(resp, &Repo.all/1, args)
-      {:ok, :single, resp} -> Connection.from_list(resp, args)
+      {:ok, :single, resp} -> Connection.from_list([resp], args)
       {:error, err} -> {:error, err}
     end
   end
