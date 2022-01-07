@@ -76,6 +76,18 @@
                 <small class="form-text text-muted"><%= gettext("Shows the timeout / ban / etc icons on a chat message.") %></small>
             </div>
 
+            <div class="form-group">
+                <%= label f, :chat_text_size, gettext("Chat Text Size") %>
+                <%= select f, :chat_text_size, @chat_text_sizes, class: ["custom-select"] %>
+                <small class="form-text text-muted"><%= gettext("Changes the default size of chat text for easier viewing.") %></small>
+            </div>
+
+            <div class="form-group">
+                <%= label f, :chat_font, gettext("Chat Font") %>
+                <%= select f, :chat_font, @chat_fonts, class: ["custom-select"] %>
+                <small class="form-text text-muted"><%= gettext("Changes the default font of chat text for easier viewing.") %></small>
+            </div>
+
             <%= submit gettext("Update Settings"), class: "btn btn-primary mt-4" %>
 
             <% end %>

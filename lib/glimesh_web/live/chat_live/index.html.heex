@@ -8,7 +8,7 @@
     ]
   }
   phx-update={@update_action}
-  style={background_style(@channel)}
+  style={background_style(@channel) <> font_size(@user_preferences) <> font_type(@user_preferences)}
 >
   <div id="channel-header" class="channel-header">
     <span><%= gettext("Welcome to chat! Follow the rules.") %></span>
@@ -28,6 +28,7 @@
         ]
       }
     >
+    <!-- mod icons -->
       <div class={["user-message-header", unless(@popped_out, do: "d-inline d-md-block")]}>
         <%= if Map.get(@permissions, :can_delete, false)  do %>
           <i
@@ -74,7 +75,11 @@
             title={gettext("Ban user from channel.")}
           >
           </i>
+          <!--------------------->
         <% end %>
+      </div>
+      <div>
+        <!-- Chat message header -->
         <%= unless chat_message.is_followed_message or chat_message.is_subscription_message do %>
           <%= Glimesh.Chat.Effects.render_global_badge(chat_message.user) %>
           <%= if is_nil(chat_message.metadata) do %>
@@ -82,6 +87,8 @@
           <% else %>
             <%= Glimesh.Chat.Effects.render_channel_badge(chat_message) %>
           <% end %>
+
+          <%= Glimesh.Chat.Effects.render_pronoun_badge(assigns, chat_message.user) %>
 
           <%= Glimesh.Chat.Effects.render_username_and_avatar(chat_message) %>
         <% end %>
@@ -101,6 +108,7 @@
         <%= unless @popped_out or chat_message.is_followed_message or chat_message.is_subscription_message do %>
           <span class="d-inline d-md-none">:</span>
         <% end %>
+        <!-- ---------------------- -->
       </div>
       <div class={["user-message", unless(@popped_out, do: "d-inline d-md-block")]}>
         <%= if chat_message.is_followed_message or chat_message.is_subscription_message,
@@ -113,7 +121,7 @@
 <div id="more-chat-messages" class="channel-overlay-footer d-none" phx-click="scroll_to_bottom">
   <span><%= gettext("New chat messages below!") %></span>
 </div>
-<div class="chat-form">
+<div>
   <%= live_component(GlimeshWeb.ChatLive.MessageForm,
     id: :new,
     action: :new,
@@ -122,6 +130,7 @@
     user: @user,
     theme: @theme,
     show_timestamps: @show_timestamps,
-    show_mod_icons: @show_mod_icons
+    show_mod_icons: @show_mod_icons,
+    user_preferences: @user_preferences
   ) %>
 </div>

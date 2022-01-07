@@ -169,6 +169,8 @@ defmodule GlimeshWeb.UserSettingsController do
     |> assign(:twitter_auth_url, twitter_auth_url)
     |> assign(:profile_changeset, Accounts.change_user_profile(user))
     |> assign(:preference_changeset, Accounts.change_user_preference(user_preference))
+    |> assign(:chat_text_sizes, get_text_sizes)
+    |> assign(:chat_fonts, get_fonts)
   end
 
   defp assign_channel_changesets(conn, _opts) do
@@ -182,5 +184,22 @@ defmodule GlimeshWeb.UserSettingsController do
     else
       conn |> assign(:channel, channel)
     end
+  end
+
+  defp get_text_sizes do
+    for i <- Enum.to_list(8 .. 48) do
+      cond do
+         i == 16 ->
+          [value: i, key: gettext("%{num} (default)", num: i)]
+         true ->
+          [value: i, key: i]
+      end
+    end
+  end
+
+  defp get_fonts do
+    [[value: "roboto", key: gettext("Roboto (default)")],
+     [value: "open dyslexic", key: gettext("Open Dyslexic")]
+    ]
   end
 end

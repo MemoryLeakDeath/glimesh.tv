@@ -193,6 +193,30 @@ defmodule GlimeshWeb.GraphApi.ChatsTest do
              }
     end
 
+    test "can send a chat message up to 500 characters", %{conn: conn, user: user, channel: channel} do
+      message = for _ <- 1..500, into: "", do: <<Enum.random('0123456789abcdefghijklmnopqrstuvwxyz')>>
+      conn =
+        post(conn, "/api/graph", %{
+          "query" => @create_chat_message_mutation,
+          "variables" => %{
+            channelId: "#{channel.id}",
+            message: %{
+              message: message
+            }
+          }
+        })
+
+      assert json_response(conn, 200)["data"]["createChatMessage"] == %{
+              "message" => message,
+              "user" => %{
+                "username" => user.username
+              },
+              "tokens" => [
+                %{"type" => "text", "text" => message}
+              ]
+      }
+    end
+
     test "can send a chat message in different channel", %{
       conn: conn,
       user: user

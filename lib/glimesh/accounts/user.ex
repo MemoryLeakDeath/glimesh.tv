@@ -13,6 +13,7 @@ defmodule Glimesh.Accounts.User do
     field :pronoun, :string
     field :show_pronoun_stream, :boolean
     field :show_pronoun_profile, :boolean
+    field :show_pronoun_chat, :boolean
     field :email, :string
     field :password, :string, virtual: true
     field :hashed_password, :string
@@ -251,6 +252,7 @@ defmodule Glimesh.Accounts.User do
       :pronoun,
       :show_pronoun_stream,
       :show_pronoun_profile,
+      :show_pronoun_chat,
       :social_twitter,
       :social_youtube,
       :social_instagram,

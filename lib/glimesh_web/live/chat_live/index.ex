@@ -23,7 +23,9 @@ defmodule GlimeshWeb.ChatLive.Index do
       else
         %{
           show_timestamps: false,
-          show_mod_icons: false
+          show_mod_icons: false,
+          chat_text_size: 16,
+          chat_font: nil
         }
       end
 
@@ -122,9 +124,7 @@ defmodule GlimeshWeb.ChatLive.Index do
      socket
      |> assign(:show_timestamps, timestamp_state)
      |> assign(:user_preferences, %{show_timestamps: timestamp_state})
-     |> push_event("toggle_timestamps", %{
-       show_timestamps: timestamp_state
-     })}
+     |> assign(:chat_messages, list_chat_messages(socket.assigns.channel))}
   end
 
   @impl true
@@ -140,9 +140,7 @@ defmodule GlimeshWeb.ChatLive.Index do
      socket
      |> assign(:show_timestamps, timestamp_state)
      |> assign(:user_preferences, user_preferences)
-     |> push_event("toggle_timestamps", %{
-       show_timestamps: timestamp_state
-     })}
+     |> assign(:chat_messages, list_chat_messages(socket.assigns.channel))}
   end
 
   @impl true
@@ -158,9 +156,7 @@ defmodule GlimeshWeb.ChatLive.Index do
      socket
      |> assign(:show_mod_icons, mod_icon_state)
      |> assign(:user_preferences, user_preferences)
-     |> push_event("toggle_mod_icons", %{
-       show_mod_icons: mod_icon_state
-     })}
+     |> assign(:chat_messages, list_chat_messages(socket.assigns.channel))}
   end
 
   @impl true
@@ -196,5 +192,14 @@ defmodule GlimeshWeb.ChatLive.Index do
     url = Glimesh.ChatBackground.url({channel.chat_bg, channel}, :original)
 
     "--chat-bg-image: url('#{url}');"
+  end
+
+  defp font_size(%Accounts.UserPreference{:chat_text_size => size}) do
+    "--chat-font-size: #{size}px;"
+  end
+
+  defp font_type(%Accounts.UserPreference{:chat_font => font}) do
+    font = (font || "Roboto")
+    "--chat-font: #{font}, Arial, sans-serif;"
   end
 end

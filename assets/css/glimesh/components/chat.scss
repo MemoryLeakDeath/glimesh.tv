@@ -27,6 +27,12 @@
         // justify-content: flex-end;
         overflow-y: scroll;
 
+        --chat-font-size: 16px;
+        font-size: var(--chat-font-size);
+
+        --chat-font: 'Roboto', Arial, sans-serif;
+        font-family: var(--chat-font);
+
         --chat-bg-image: url('/images/bg.png');
         background-image: var(--chat-bg-image);
 
@@ -51,7 +57,7 @@
             border-radius: 5px;
             margin: 3px;
             padding: 10px;
-            max-width: 370px;
+            max-width: 95% !important;
             word-break: break-word;
             color: var(--body-color);
 
@@ -66,6 +72,7 @@
 
             .user-message {
                 margin-top: 5px;
+                overflow-y: hidden;
             }
         }
 
@@ -144,7 +151,12 @@
         }
     }
 
-    .chat-form {
-        flex: 0 0;
-    }
+}
+
+.chat-message-input {
+    resize: none !important;
+}
+
+.chat-username-default {
+    color: var(--chat-username-default);
 }

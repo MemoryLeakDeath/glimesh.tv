@@ -60,7 +60,8 @@ defmodule Glimesh.Chat.Renderer do
       width: size,
       height: size,
       draggable: "false",
-      alt: text
+      alt: text,
+      title: text
     )
   end
 

@@ -14,6 +14,8 @@ defmodule Glimesh.Accounts.UserPreference do
     field :show_mod_icons, :boolean, default: true
     field :show_mature_content, :boolean, default: false
     field :gift_subs_enabled, :boolean, default: true
+    field :chat_text_size, :integer, default: 16
+    field :chat_font, :string
 
     timestamps()
   end
@@ -29,8 +31,11 @@ defmodule Glimesh.Accounts.UserPreference do
       :show_timestamps,
       :show_mature_content,
       :show_mod_icons,
-      :gift_subs_enabled
+      :gift_subs_enabled,
+      :chat_text_size,
+      :chat_font
     ])
     |> unique_constraint(:user_id)
+    |> validate_required(:chat_text_size)
   end
 end

@@ -4,6 +4,9 @@ Portions of this software are licensed as follows:
 
 * All content that resides under the "assets/css/cork" directory of this repository, 
   if that directory exists, is licensed under the license defined in "assets/css/cork/LICENSE.md".
+* The OpenDyslexic font files residing under the "priv/assets/fonts" directory of this repository, 
+  if that directory exists, is licensed under the SIL-OFL license defined in "priv/assets/fonts/OFL.txt"
+  and its corresponding FAQ in "priv/assets/fonts/OFL-FAQ.txt".
 * All client-side Javascript (when served directly or after being compiled, arranged, 
   augmented, or combined), is licensed under the "MIT Expat" license.
 * All third party components incorporated into the Glimesh Software are licensed under the 

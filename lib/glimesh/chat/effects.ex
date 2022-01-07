@@ -4,14 +4,18 @@ defmodule Glimesh.Chat.Effects do
   """
 
   import GlimeshWeb.Gettext
+  import Phoenix.LiveView
 
   alias Glimesh.Payments
   alias GlimeshWeb.Router.Helpers, as: Routes
   alias Phoenix.HTML.Tag
 
   alias Glimesh.Chat.Effects.Badges.{
+    AdminBadge,
     ChannelSubscriberBadge,
+    GCTBadge,
     ModeratorBadge,
+    PronounBadge,
     StreamerBadge
   }
 
@@ -41,7 +45,7 @@ defmodule Glimesh.Chat.Effects do
 
   def get_username_color_for_message(
         %Message{user: user, metadata: metadata},
-        default \\ "text-color-link"
+        default \\ "chat-username-default"
       ) do
     cond do
       user.is_admin -> "text-danger"
@@ -165,7 +169,14 @@ defmodule Glimesh.Chat.Effects do
     ChannelSubscriberBadge.render()
   end
 
-  def render_channel_badge(%Message{metadata: %Metadata{admin: true}}), do: ""
+  def render_channel_badge(%Message{metadata: %Metadata{gct: true}}) do
+    GCTBadge.render()
+  end
+
+  def render_channel_badge(%Message{metadata: %Metadata{admin: true}}) do
+    AdminBadge.render()
+  end
+
   def render_channel_badge(%Message{metadata: nil}), do: nil
   def render_channel_badge(%Message{metadata: %Metadata{} = _metadata}), do: nil
 
@@ -183,6 +194,12 @@ defmodule Glimesh.Chat.Effects do
       Payments.is_subscribed?(channel, user) ->
         ChannelSubscriberBadge.render()
 
+      user.is_gct ->
+        GCTBadge.render()
+
+      user.is_admin ->
+        AdminBadge.render()
+
       true ->
         ""
     end
@@ -198,5 +215,11 @@ defmodule Glimesh.Chat.Effects do
     !(username == chat_message.user.username) &&
       (String.match?(chat_message.message, ~r/\b#{username}\b/i) ||
          String.match?(chat_message.message, ~r/\b#{"@" <> username}\b/i))
+  end
+
+  def render_pronoun_badge(assigns, user) do
+    assigns
+    |> assign(:chat_user, user)
+    |> PronounBadge.render()
   end
 end

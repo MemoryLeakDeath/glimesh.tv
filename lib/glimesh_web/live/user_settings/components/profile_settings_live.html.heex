@@ -78,6 +78,11 @@
                 ) %>
                 <%= error_tag(f, :show_pronoun_profile) %>
               </div>
+              <div class="custom-control custom-checkbox">
+                  <%= checkbox(f, :show_pronoun_chat, class: "custom-control-input") %>
+                  <%= label(f, :show_pronoun_chat, gettext("In Chat"), class: "custom-control-label") %>
+                  <%= error_tag(f, :show_pronoun_chat) %>
+              </div>
             </div>
           </div>
 

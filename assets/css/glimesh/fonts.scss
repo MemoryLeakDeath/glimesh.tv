@@ -39,3 +39,23 @@
           url('/fonts/roboto-v20-latin-regular.woff') format('woff'), /* Modern Browsers */
           url('/fonts/roboto-v20-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */;
 }
+
+/* opendyslexic-regular */
+@font-face {
+     font-family: 'Open Dyslexic';
+     font-style: normal;
+     font-weight: 400;
+     src: local(''),
+          url('/fonts/OpenDyslexic-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+          url('/fonts/OpenDyslexic-Regular.woff') format('woff'), /* Modern Browsers */
+}
+
+/* opendyslexic-italic */
+@font-face {
+     font-family: 'Open Dyslexic';
+     font-style: italic;
+     font-weight: 400;
+     src: local(''),
+          url('/fonts/OpenDyslexic-Italic.woff2') format('woff2'), /* Super Modern Browsers */
+          url('/fonts/OpenDyslexic-Italic.woff') format('woff'), /* Modern Browsers */
+}

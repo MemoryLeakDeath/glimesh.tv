@@ -29,7 +29,7 @@ defmodule Glimesh.Chat.ChatMessage do
     |> cast(attrs, [:message, :is_visible, :is_followed_message, :is_subscription_message])
     |> cast_embed(:metadata)
     |> validate_required([:channel, :user, :message])
-    |> validate_length(:message, min: 1, max: 255)
+    |> validate_length(:message, min: 1, max: 500)
   end
 
   @doc false

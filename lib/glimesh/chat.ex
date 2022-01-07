@@ -53,7 +53,8 @@ defmodule Glimesh.Chat do
             moderator: Glimesh.Chat.is_moderator?(channel, user),
             admin: user.is_admin,
             platform_founder_subscriber: Payments.is_platform_founder_subscriber?(user),
-            platform_supporter_subscriber: Payments.is_platform_supporter_subscriber?(user)
+            platform_supporter_subscriber: Payments.is_platform_supporter_subscriber?(user),
+            gct: user.is_gct
           }
         }
         |> ChatMessage.changeset(attrs)

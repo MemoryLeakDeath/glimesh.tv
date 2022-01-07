@@ -2,10 +2,14 @@ defmodule Glimesh.Chat.Effects.Badges.StreamerBadge do
   @moduledoc """
   Badge for streamers
   """
+  import GlimeshWeb.Gettext
+  import Phoenix.LiveView.Helpers
 
-  alias Phoenix.HTML.Tag
-
-  def render do
-    Tag.content_tag(:span, "Streamer", class: "badge badge-primary")
+  def render(assigns \\ %{}) do
+    ~H"""
+      <span class={["badge", "badge-primary"]} title={gettext("Streamer")}>
+        <i class={["fas", "fa-tv"]} style={"text-color: white;"}></i>
+      </span>
+    """
   end
 end

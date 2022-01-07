@@ -54,7 +54,7 @@ export default {
         const picker = new EmojiButton({
             theme: this.theme(),
             position: 'top-start',
-            autoHide: false,
+            autoHide: true,
             style: 'twemoji',
             emojiSize: '32px',
             custom: glimeshEmojis,
@@ -83,7 +83,9 @@ export default {
 
         const chat = document.getElementById('chat_message-form_message');
         const chatMessages = document.getElementById('chat-messages');
-        const chatForm = document.getElementById("chat-form")
+        const chatForm = document.getElementById("chat-form");
+        const toggleTimestamps = document.getElementById("toggle-timestamps");
+        const toggleModIcons = document.getElementById("toggle-mod-icons");
 
         // Whenever the user changes their browser size, re-scroll them to the bottom
         window.addEventListener('resize', () => this.scrollToBottom(chatMessages));
@@ -100,30 +102,38 @@ export default {
             chat.value = chat.value.substring(0, start) + value + chat.value.substring(end, chat.value.length);
         });
 
-        this.scrollToBottom(chatMessages);
-        this.handleEvent("new_chat_message", (e) => {
-            // Scroll if we need to
-            this.maybeScrollToBottom(chatMessages);
-
-            let thisMessage = document.getElementById("chat-message-" + e.message_id);
-            // Apply a BS init to just the new chat message
-            BSN.initCallback(thisMessage);
-        });
-        this.handleEvent("toggle_timestamps", (e) => {
+        toggleTimestamps.addEventListener("click", (e) => {
             if (e["show_timestamps"]) {
                 chatMessages.classList.add("show-timestamps");
             } else {
                 chatMessages.classList.remove("show-timestamps");
             }
             this.maybeScrollToBottom(chatMessages);
+            var username = toggleTimestamps.dataset.user;
+            this.pushEvent("toggle_timestamps", username != "" ? {user: username} : {});
         });
-        this.handleEvent("toggle_mod_icons", (e) => {
-            if (e["show_mod_icons"]) {
-                chatMessages.classList.add("show-mod-icons");
-            } else {
-                chatMessages.classList.remove("show-mod-icons");
-            }
+
+        if(toggleModIcons != null) {
+            toggleModIcons.addEventListener("click", (e) => {
+                if (e["show_mod_icons"]) {
+                    chatMessages.classList.add("show-mod-icons");
+                } else {
+                    chatMessages.classList.remove("show-mod-icons");
+                }
+                this.maybeScrollToBottom(chatMessages);
+                var username = toggleModIcons.dataset.user;
+                this.pushEvent("toggle_mod_icons", {user: username});
+            });    
+        }
+
+        this.scrollToBottom(chatMessages);
+        this.handleEvent("new_chat_message", (e) => {
+            // Scroll if we need to
             this.maybeScrollToBottom(chatMessages);
+
+            let thisMessage = document.getElementById('chat-message-' + e.message_id);
+            // Apply a BS init to just the new chat message
+            BSN.initCallback(thisMessage);
         });
 
         this.handleEvent("remove_timed_out_user_messages", (e) => {
@@ -152,15 +162,17 @@ export default {
         let currentIndex = -1; // The position the user is in of the array that holds the messages.
 
         chatForm.addEventListener("submit", function (e) {
-            if (e.target[2].value !== "" && e.target[2].value.length <= 255) {
-                recentMessages.unshift(e.target[2].value); // Pushes the message to the array
+            if (chat.value !== "" && chat.value.length <= 500) {
+                recentMessages.unshift(chat.value); // Pushes the message to the array
                 currentIndex = -1; // Resets the position
                 // If the message sent is what the user was typing (NOT a previous message) reset currentMessage
-                if (e.target[2].value == currentMessage) {
+                if (chat.value == currentMessage) {
                     currentMessage = ""
                 }
             }
         });
+
+        let chatHeightRows = 1;  // used for expanding the textarea as text is entered
         // Chat doesn't exist if they are not logged it, we check that before adding the listener
         if (chat) {
             chat.addEventListener("keyup", function(e) {
@@ -189,13 +201,45 @@ export default {
                         e.target.value = "" // Resets the box back to default
                     }
                     return false;
+                } else if (e.code == "Enter" && !e.shiftKey) {
+                    // capture enter key (as long as the user isn't holding shift) to use as the form submit now that we have a textarea instead of text input.
+                    e.stopPropagation();
+                    e.preventDefault();
+                    chatHeightRows = 1;  // reset the chat height
+                    chat.setAttribute("rows", chatHeightRows);
+                    document.getElementById("chat_message-form").dispatchEvent(new Event("submit", {bubbles: true}))
+                    return false;
+                }
+            });
+
+            // Now that we have a textarea for chat input, the following handler is to prevent a trailing \n when users hit enter without holding shift.
+            // This is important since we will display a large version of an emote when it is the only thing entered.
+            chat.addEventListener('keydown', function(e) {
+                if (e.code == "Enter" && !e.shiftKey) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    return false;
                 }
             });
         }
+
         // On input we set the currentMessage to what is being typed. Not triggered when user puts previous messages in the input box
         chatForm.addEventListener("input", function (e) {
             if (currentIndex == -1) {
                 currentMessage = e.target.value;
+            }
+
+            // this will expand the textarea as users type up to 3 rows
+            // it will not re-shrink unless the user clears the field entirely or hits enter to submit
+            if ((e.target.scrollHeight > e.target.clientHeight) && (chatHeightRows < 3)) {
+                chatHeightRows++;
+                chat.setAttribute("rows", chatHeightRows);
+            } else if ((e.target.scrollHeight < e.target.clientHeight) && (chatHeightRows > 1)) {
+                chatHeightRows--;
+                chat.setAttribute("rows", chatHeightRows);
+            } else if (e.target.value == "") {
+                chatHeightRows = 1;
+                chat.setAttribute("rows", chatHeightRows);
             }
         });
     }

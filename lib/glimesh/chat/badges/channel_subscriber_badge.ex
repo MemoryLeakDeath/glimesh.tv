@@ -3,14 +3,14 @@ defmodule Glimesh.Chat.Effects.Badges.ChannelSubscriberBadge do
   Badge for channel subscribers
   """
 
-  alias Phoenix.HTML.Tag
   import GlimeshWeb.Gettext
+  import Phoenix.LiveView.Helpers
 
-  def render do
-    Tag.content_tag(:span, Tag.content_tag(:i, "", class: "fas fa-trophy"),
-      class: "badge badge-secondary",
-      "data-toggle": "tooltip",
-      title: gettext("Channel Subscriber")
-    )
+  def render(assigns \\ %{}) do
+    ~H"""
+      <span class={["badge", "badge-secondary"]} title={gettext("Channel Subscriber")}>
+        <i class={["fas", "fa-trophy"]} style={"text-color: white;"}></i>
+      </span>
+    """
   end
 end
