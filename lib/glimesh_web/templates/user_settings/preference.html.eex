@@ -66,6 +66,21 @@
                 <small class="form-text text-muted"><%= gettext("Shows the timeout / ban / etc icons on a chat message.") %></small>
             </div>
 
+            <h3 class="mt-4"><%= gettext("Hosted Channels Marked 'Not Interested'") %></h3>
+            <small class="text-muted"><%= gettext("You have hidden the following channels from showing on hosted recommendations.  If you change your mind, you can re-allow them here.") %></small>
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-10">
+                        <select class="custom-select">
+                            <option>Lorem ipsum</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-primary"><%= gettext("Allow") %></button>
+                    </div>
+                </div>
+            </div>
+
             <%= submit gettext("Update Settings"), class: "btn btn-primary mt-4" %>
 
             <% end %>

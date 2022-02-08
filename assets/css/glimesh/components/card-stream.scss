@@ -1,5 +1,6 @@
 .card-stream {
     img {
+        z-index: 1;
         transition: transform .2s;
     }
 
@@ -10,24 +11,29 @@
     }
 
     .card-img-overlay {
+        z-index: 2;
         transition: opacity .2s;
     }
 
     .card-stream-title {
+        z-index: 2;
         text-overflow: ellipsis;
     }
 
 
     .card-stream-category {
+        z-index: 2;
         float: left;
     }
 
     .card-stream-tags {
+        z-index: 2;
         float: right;
         text-align: right;
     }
 
     .card-stream-streamer {
+        z-index: 2;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -40,8 +46,10 @@
     }
 
     .card-stream-streamer.sub-ready {
+        z-index: 2;
         background: $color-secondary !important;
     }
+
 
     &:hover {
         img {
@@ -54,4 +62,15 @@
 
         color: var(--body-color);
     }
+    .card-stream-menu {
+        position: absolute;
+        z-index: 20;
+        bottom: 25px;
+        right: 10px;
+    
+        button {
+            z-index: 20;
+            pointer-events: all;
+        }
+    }    
 }

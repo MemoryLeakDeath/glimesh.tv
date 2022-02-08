@@ -39,8 +39,10 @@ defmodule GlimeshWeb.StreamsLive.FollowingTest do
       {:ok, _, html} = live(conn, Routes.streams_list_path(conn, :index, "following"))
 
       assert html =~ "Followed Streams"
+      assert html =~ "Live Streams"
       assert html =~ streamer.displayname
       assert html =~ channel.title
+      refute html =~ "Hosted Streams"
     end
 
     test "lists users that are offline", %{
@@ -78,6 +80,7 @@ defmodule GlimeshWeb.StreamsLive.FollowingTest do
 
       {:ok, _, html} = live(conn, Routes.streams_list_path(conn, :index, "following"))
 
+      assert html =~ "Hosted Streams"
       assert html =~ "Live being hosted"
       assert html =~ live_streamer_not_followed.displayname
       assert html =~ channel.title

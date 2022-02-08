@@ -137,41 +137,30 @@ defmodule Glimesh.ChannelLookups do
     |> length()
   end
 
-  def list_live_followed_channels_and_hosts(%User{} = user) do
-    include_hosts_query =
-      from(c in Channel,
-        left_join: f in Follower,
-        on: c.user_id == f.streamer_id,
-        join: ch in ChannelHosts,
-        on: c.id == ch.hosting_channel_id,
-        join: target in Channel,
-        on: target.id == ch.target_channel_id,
-        where: ch.status == "hosting",
-        where: target.status == "live",
-        where: f.user_id == ^user.id,
-        where:
-          fragment(
-            "not exists(select true from followers where user_id = ? and streamer_id = ?)",
-            ^user.id,
-            target.user_id
-          ),
-        distinct: target.id,
-        select: [target],
-        select_merge: %{match_type: "hosting"}
-      )
-
-    live_followed_query =
-      from([c] in Channel,
-        join: f in Follower,
-        on: c.user_id == f.streamer_id,
-        where: c.status == "live",
-        where: f.user_id == ^user.id,
-        select_merge: %{match_type: "live"}
-      )
-
-    query = live_followed_query |> union_all(^include_hosts_query)
-
-    Repo.replica().all(query)
+  def list_live_followed_hosting_channels(%User{} = user) do
+    from(c in Channel,
+      left_join: f in Follower,
+      on: c.user_id == f.streamer_id,
+      join: ch in ChannelHosts,
+      on: c.id == ch.hosting_channel_id,
+      join: hostinguser in User,
+      on: c.user_id == hostinguser.id,
+      join: target in Channel,
+      on: target.id == ch.target_channel_id,
+      where: ch.status == "hosting",
+      where: target.status == "live",
+      where: f.user_id == ^user.id,
+      where:
+        fragment(
+          "not exists(select true from followers where user_id = ? and streamer_id = ?)",
+          ^user.id,
+          target.user_id
+        ),
+      distinct: target.id,
+      select: target,
+      select_merge: %{hosted_by: hostinguser.displayname}
+    )
+    |> Repo.all()
     |> Repo.preload([:user, :category, :stream, :subcategory, :tags])
   end
 

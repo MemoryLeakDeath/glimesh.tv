@@ -25,11 +25,6 @@
             />
             <div class="card-img-overlay h-100 d-flex flex-column justify-content-between">
               <div>
-                <div class="card-stream-category">
-                  <%= if channel.match_type == "hosting" do %>
-                    <span class="badge badge-warning"><%= gettext("Hosted") %></span>
-                  <% end %>
-                </div>
                 <div class="card-stream-tags">
                   <%= if channel.subcategory do %>
                     <span class="badge badge-info"><%= channel.subcategory.name %></span>
@@ -79,6 +74,69 @@
     <% end %>
   </div>
 </div>
+<%= if length(@hosted_channels) > 0 do %>
+    <div class="container container-stream-list">
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center">
+            <div class="col-md-12 mx-auto ">
+                <h1 class="display-4 font-weight-normal">
+                    <%= gettext("Hosted Streams") %>
+                </h1>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <%= for channel <- @hosted_channels do %>
+            <div class="col-sm-12 col-md-6 col-xl-4 mt-4">
+                <div class="card card-stream">
+                <%= link to: Routes.user_stream_path(@socket, :index, channel.user.username), class: "text-color-link", style: "z-index: 1 !important;" do %>
+                    <img src="<%= Glimesh.StreamThumbnail.url({channel.stream.thumbnail, channel.stream}, :original) %>"
+                        alt="<%= channel.title %>" class="card-img" height="468" width="832">
+                    <div class="card-img-overlay h-100 d-flex flex-column justify-content-between">
+
+                        <div>
+                            <div class="card-stream-category">
+                                <span class="badge badge-warning"><%= gettext("Hosted by %{host}", %{host: channel.hosted_by}) %></span>
+                            </div>
+                            <div class="card-stream-tags">
+                                <%= if channel.subcategory do %>
+                                <span class="badge badge-info"><%= channel.subcategory.name %></span>
+                                <% end %>
+                                <%= for tag <- channel.tags do %>
+                                <span class="badge badge-primary"><%= tag.name %></span>
+                                <% end %>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="media card-stream-streamer col-12">
+                                <img src="<%= Glimesh.Avatar.url({channel.user.avatar, channel.user}, :original) %>"
+                                    alt="<%= channel.user.displayname%>" width="48" height="48"
+                                    class="img-avatar mr-2 <%= if Glimesh.Accounts.can_receive_payments?(channel.user), do: "img-verified-streamer", else: "" %>">
+                                <div class="media-body">
+                                    <h6 class="mb-0 mt-1 card-stream-title"><%= channel.title %></h6>
+                                    <p class="mb-0 card-stream-username"><%= channel.user.displayname %> <span
+                                            class="badge badge-info"><%= Glimesh.Streams.get_channel_language(channel) %></span>
+                                        <%= if channel.mature_content do %>
+                                        <span class="badge badge-warning"><%= gettext("Mature") %> </span>
+                                        <% end %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% end %>
+                    <div class="card-stream-menu dropright">
+                        <button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item" type="button" phx-click="add-not-interested" phx-value-channel-id="<%= channel.id %>"><i class="fas fa-ban"></i>&nbsp;<%= gettext("Not Interested") %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% end %>
+        </div>
+    </div>
+<% end %>
+
 <div class="container">
   <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center">
     <div class="col-md-12 mx-auto ">

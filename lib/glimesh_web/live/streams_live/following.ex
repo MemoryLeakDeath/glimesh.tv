@@ -10,7 +10,8 @@ defmodule GlimeshWeb.StreamsLive.Following do
       %Glimesh.Accounts.User{} = user ->
         if session["locale"], do: Gettext.put_locale(session["locale"])
 
-        live_streams = Glimesh.ChannelLookups.list_live_followed_channels_and_hosts(user)
+        live_streams = Glimesh.ChannelLookups.list_live_followed_channels(user)
+        hosted_streams = Glimesh.ChannelLookups.list_live_followed_hosting_channels(user)
 
         {:ok,
          socket
@@ -19,7 +20,8 @@ defmodule GlimeshWeb.StreamsLive.Following do
          |> assign(page: 1, per_page: 12, update_mode: "append")
          |> assign(:current_user, user)
          |> search_followed_users()
-         |> assign(:channels, live_streams), temporary_assigns: [users: []]}
+         |> assign(:channels, live_streams)
+         |> assign(:hosted_channels, hosted_streams), temporary_assigns: [users: []]}
 
       nil ->
         {:ok, redirect(socket, to: "/")}
@@ -36,6 +38,14 @@ defmodule GlimeshWeb.StreamsLive.Following do
   def handle_event("load-more", _, %{assigns: assigns} = socket) do
     {:noreply,
      assign(socket, update_mode: "append", page: assigns.page + 1) |> search_followed_users()}
+  end
+
+  def handle_event("add-not-interested", %{"channel-id" => channel_id}, socket) do
+    user = socket.assigns.current_user
+    Glimesh.Accounts.UserNotInterestedChannels.add_not_interested(%Glimesh.Accounts.UserNotInterestedChannels{}, user, channel_id)
+    {:noreply,
+     socket
+     |> push_event("hideNotInterested", %{channel_id: channel_id}) }
   end
 
   def search_followed_users(%{assigns: %{query: query, page: page, per_page: per}} = socket) do

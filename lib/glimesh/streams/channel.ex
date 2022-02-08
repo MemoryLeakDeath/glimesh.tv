@@ -46,8 +46,8 @@ defmodule Glimesh.Streams.Channel do
     field :poster, Glimesh.ChannelPoster.Type
     field :chat_bg, Glimesh.ChatBackground.Type
 
-    # This is used when searching for live channels that are live or hosted
-    field :match_type, :string, virtual: true
+    # This is used when searching for hosted channels
+    field :hosted_by, :string, virtual: true
 
     many_to_many :tags, Glimesh.Streams.Tag, join_through: "channel_tags", on_replace: :delete
 

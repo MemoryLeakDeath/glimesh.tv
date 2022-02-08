@@ -453,20 +453,18 @@ defmodule Glimesh.ChannelLookupsTest do
     test "should show up in the search when the followed channel is not live", %{
       user: user,
       live_channel_hosted: live_hosted,
-      live_channel_followed_but_not_hosted: live_followed
+      host: host
     } do
-      results = ChannelLookups.list_live_followed_channels_and_hosts(user)
-      assert length(results) == 2
-      assert Enum.at(results, 0).id == live_followed.channel.id
-      assert Enum.at(results, 0).match_type == "live"
-      assert Enum.at(results, 1).id == live_hosted.channel.id
-      assert Enum.at(results, 1).match_type == "hosting"
+      results = ChannelLookups.list_live_followed_hosting_channels(user)
+      assert length(results) == 1
+      assert hd(results).id == live_hosted.channel.id
+      assert hd(results).hosted_by == host.displayname
     end
 
     test "should NOT show duplicates when followed channels host the same live channel", %{
       user: user,
       live_channel_hosted: live_hosted,
-      live_channel_followed_but_not_hosted: live_followed
+      host: host
     } do
       followed_channel_same_host_target = streamer_fixture()
       Glimesh.AccountFollows.follow(followed_channel_same_host_target, user)
@@ -478,19 +476,18 @@ defmodule Glimesh.ChannelLookupsTest do
       })
       |> Repo.insert()
 
-      results = ChannelLookups.list_live_followed_channels_and_hosts(user)
-      assert length(results) == 2
-      assert Enum.at(results, 0).id == live_followed.channel.id
-      assert Enum.at(results, 0).match_type == "live"
-      assert Enum.at(results, 1).id == live_hosted.channel.id
-      assert Enum.at(results, 1).match_type == "hosting"
+      results = ChannelLookups.list_live_followed_hosting_channels(user)
+      assert length(results) == 1
+      assert hd(results).id == live_hosted.channel.id
+      assert hd(results).hosted_by == host.displayname
     end
 
     test "should show followed live channel without duplicating it when it is hosted by an offline channel that is followed",
          %{
            user: user,
            live_channel_hosted: live_hosted,
-           live_channel_followed_but_not_hosted: live_followed
+           live_channel_followed_but_not_hosted: live_followed,
+           host: host
          } do
       followed_offline_channel_same_host_target = streamer_fixture()
       Glimesh.AccountFollows.follow(followed_offline_channel_same_host_target, user)
@@ -502,34 +499,11 @@ defmodule Glimesh.ChannelLookupsTest do
       })
       |> Repo.insert()
 
-      results = ChannelLookups.list_live_followed_channels_and_hosts(user)
-      assert length(results) == 2
-      assert Enum.at(results, 0).id == live_followed.channel.id
-      assert Enum.at(results, 0).match_type == "live"
-      assert Enum.at(results, 1).id == live_hosted.channel.id
-      assert Enum.at(results, 1).match_type == "hosting"
-    end
-
-    test "should prefer live channels over hosted when duplicates occur", %{
-      user: user,
-      live_channel_hosted: live_hosted,
-      live_channel_followed_but_not_hosted: live_followed
-    } do
-      # sanity check
-      results = ChannelLookups.list_live_followed_channels_and_hosts(user)
-      assert length(results) == 2
-      assert Enum.at(results, 0).id == live_followed.channel.id
-      assert Enum.at(results, 0).match_type == "live"
-      assert Enum.at(results, 1).id == live_hosted.channel.id
-      assert Enum.at(results, 1).match_type == "hosting"
-
-      # if the user follows the channel being hosted, it should show up in the live section and not as a "hosted" stream.
-      Glimesh.AccountFollows.follow(live_hosted, user)
-      results = ChannelLookups.list_live_followed_channels_and_hosts(user)
-      assert length(results) == 2
-      # I don't do an ID check here as the results are not sorted and could be random
-      assert Enum.at(results, 0).match_type == "live"
-      assert Enum.at(results, 1).match_type == "live"
+      results = ChannelLookups.list_live_followed_hosting_channels(user)
+      assert length(results) == 1
+      assert hd(results).id == live_hosted.channel.id
+      assert hd(results).hosted_by == host.displayname
+      refute hd(results).hosted_by == followed_offline_channel_same_host_target.displayname
     end
 
     test "followed channels and followed hosted channels counts should be accurate", %{
@@ -551,8 +525,8 @@ defmodule Glimesh.ChannelLookupsTest do
          } do
       Glimesh.AccountFollows.follow(host, host)
       Glimesh.AccountFollows.follow(live_hosted, host)
-      results = ChannelLookups.list_live_followed_channels_and_hosts(host)
-      assert length(results) == 1
+      results = ChannelLookups.list_live_followed_hosting_channels(host)
+      assert length(results) == 0
     end
   end
 end
