@@ -239,6 +239,30 @@ defmodule Glimesh.ChannelLookups do
     |> Repo.preload([:category, :stream, :subcategory, :user, :tags])
   end
 
+  def get_channel_for_display_name(display_name, ignore_banned \\ false, ignore_inaccessible \\ false) do
+    query =
+      Channel
+      |> join(:inner, [u], assoc(u, :user), as: :user)
+      |> where([user: u], u.displayname == ^display_name)
+
+    query =
+      if ignore_inaccessible do
+        query
+      else
+        where(query, [c], c.inaccessible == false)
+      end
+
+    query =
+      if ignore_banned do
+        query
+      else
+        where(query, [user: u], u.is_banned == false)
+      end
+
+    Repo.one(query)
+    |> Repo.preload([:category, :stream, :subcategory, :user, :tags])
+  end
+
   def get_channel_by_hmac_key(hmac_key) do
     Repo.one(
       from c in Channel,

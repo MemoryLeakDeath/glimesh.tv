@@ -173,6 +173,18 @@ defmodule GlimeshWeb.Router do
     resources "/users/settings/channel/mods", ChannelModeratorController
   end
 
+  scope "/", GlimeshWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_user_has_channel]
+
+    get "/users/settings/channel/costreaming", CostreamingLive.CostreamingSettingsController, :index
+    get "/users/settings/channel/costreaming/host", CostreamingLive.CostreamingSettingsController, :index_host
+    get "/users/settings/channel/costreaming/create", CostreamingLive.CostreamingSettingsController, :create
+    get "/users/settings/channel/costreaming/:id/edit", CostreamingLive.CostreamingSettingsController, :edit
+    get "/users/settings/channel/costreaming/custom", CostreamingLive.CostreamingSettingsController, :custom_layout_upload
+    get "/users/settings/channel/costreaming/custom/manage", CostreamingLive.CostreamingSettingsController, :custom_layout_manage
+    live "/:username/costreaming/dashboard", UserLive.Stream, :costream_dashboard
+  end
+
   scope "/admin", GlimeshWeb do
     pipe_through [:browser, :require_admin_user]
 

@@ -1,0 +1,353 @@
+<%= if live_flash(@flash, :costream_info) do %>
+  <p
+    class="alert alert-success"
+    role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="costream_info"
+  >
+    <%= live_flash(@flash, :costream_info) %>
+  </p>
+<% end %>
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-10">
+        <h4><%= gettext("Co-Streaming") %></h4>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <.form
+      let={f}
+      for={@costream_changeset}
+      class="form_allow_costreaming"
+      phx-change="update_permissions"
+    >
+      <h5><%= gettext("Permissions") %></h5>
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <div class="custom-control custom-switch">
+              <%= checkbox(f, :allow_costream, class: "custom-control-input") %>
+              <%= label(f, :allow_costream, gettext("Other streamers may invite me to co-stream"),
+                class: "custom-control-label"
+              ) %>
+              <%= error_tag(f, :allow_costream) %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <div class="custom-control custom-switch">
+              <%= checkbox(f, :use_costream_tags, class: "custom-control-input") %>
+              <%= label(f, :use_costream_tags, gettext("Use category/tags defined by the co-stream"),
+                class: "custom-control-label"
+              ) %>
+              <%= error_tag(f, :use_costream_tags) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </.form>
+    <p>
+      <%= gettext(
+        "Channels must meet the following qualifications in order to participate or host a co-stream:"
+      ) %>
+    </p>
+    <ul>
+      <li><%= gettext("They must have a verified email address.") %></li>
+      <li><%= gettext("Their account must be more than 5 days old.") %></li>
+      <li><%= gettext("The host must NOT be banned from your channel.") %></li>
+      <li><%= gettext("When hosting, guests must NOT be banned from your channel.") %></li>
+    </ul>
+    <h5><%= gettext("Host A Co-stream") %></h5>
+    <p><%= gettext("Host a Co-stream or manage your hosted co-streams with other Glimesh channels.") %></p>
+    <%= if false do %>
+      <div class="row">
+        <div id="not-qualified" class="col-12 card card-body text-center">
+          <%= gettext(
+            "You have not met the minimum qualifications to co-stream, see list above for details"
+          ) %>
+        </div>
+      </div>
+    <% else %>
+      <!-- Host button -->
+      <a href={Routes.costreaming_settings_path(@socket, :index_host)} type="button" class="btn btn-primary"><%= gettext("Hosted Co-streams") %></a>
+      <div class="row mt-4">
+        <div class="col-10">
+          <h4><%= gettext("Co-stream Invitations") %></h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-10">
+          <p><%= gettext("If necessary, you may block channels from inviting you to co-stream.  Channels banned from your chat are already blocked from inviting you to co-stream.") %></p>
+          <button
+          class="btn btn-primary"
+          id="manage-costream-blocks"
+          phx-click="toggle-manage-blocks"
+          title={gettext("Manage Blocked Channels")}>
+            <%= gettext("Manage Blocked Channels") %>
+          </button>    
+        </div>
+      </div>
+      <!-- Manage Blocked Channels Modal -->
+      <%= if @manage_blocks do %>
+        <div
+          id="costream-blocks"
+          class="live-modal"
+          phx-capture-click="toggle-manage-blocks"
+          phx-window-keydown="toggle-manage-blocks"
+          phx-key="escape"
+          phx-target="#costream-blocks"
+          phx-page-loading
+        >
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title"><%= gettext("Manage Blocked Channels") %></h5>
+                <button type="button" class="close" phx-click="toggle-manage-blocks" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <.form
+                  let={g}
+                  for={@blocked_channels_changeset}
+                  id="blocked-channels-modal-form"
+                  phx-submit="add_blocked_channel"
+                >
+                  <div class="input-group">
+                    <%= label(g, :display_name, gettext("Channel"), class: "pr-2") %>
+                    <%= text_input(g, :display_name, class: "form-control") %>
+                    <%= error_tag(g, :display_name) %>
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-primary btn-md">
+                        <%= gettext("Add") %>
+                      </button>
+                    </div>
+                  </div>
+                </.form>
+                <!-- Blocked Channels List -->
+                <div class="row">
+                  <div class="col-12 pt-3">
+                    <table class="table">
+                      <thead style="background-color: var(--input-bg-color);">
+                        <tr>
+                          <th><%= gettext("Name") %></th>
+                          <th>&nbsp;</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <%= for blocked <- @blocked_channels do %>
+                            <tr id={"blocked-row-#{blocked.id}"}>
+                              <td>
+                                <%= blocked.blocked_channel.user.displayname %>
+                              </td>
+                              <td>
+                                <div>
+                                  <a
+                                    href="#"
+                                    type="button"
+                                    id={"unblock-button-#{blocked.id}"}
+                                    class="button-link h3 text-danger"
+                                    title={gettext("Unblock Channel")}
+                                    phx-click="unblock_channel"
+                                    phx-value-id={blocked.id}
+                                  >
+                                    &times;
+                                  </a>
+                                </div>
+                              </td>
+                            </tr>
+                          <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary" phx-click="toggle-manage-blocks" aria-label="Close">
+                  <%= gettext("Close") %>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <!-- ********************** -->
+      <!-- Show Participants Modal -->
+      <%= if @show_participants do %>
+        <div
+          id="show-participants"
+          class="live-modal"
+          phx-capture-click="toggle-show-participants"
+          phx-window-keydown="toggle-show-participants"
+          phx-key="escape"
+          phx-target="#show-participants"
+          phx-page-loading
+        >
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title"><%= gettext("Participants for %{costream_name}", costream_name: @show_participants_costream_name) %></h5>
+                <button type="button" class="close" phx-click="toggle-show-participants" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <!-- Participants Channels List -->
+                <div class="row">
+                  <div class="col-12 pt-3">
+                    <table class="table">
+                      <thead style="background-color: var(--input-bg-color);">
+                        <tr>
+                          <th><%= gettext("Name") %></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <%= for participant <- @show_participants_channels do %>
+                            <tr id={"participant-row-#{participant.id}"}>
+                              <td>
+                                <%= participant.channel.user.displayname %>
+                              </td>
+                            </tr>
+                          <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary" phx-click="toggle-show-participants" aria-label="Close">
+                  <%= gettext("Close") %>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <!-- **************** -->
+      <!-- Invitations Table -->
+      <div class="row">
+        <div class="col-12 pt-3">
+          <table class="table">
+            <thead style="background-color: var(--input-bg-color);">
+              <tr>
+                <th><%= gettext("Co-stream Title") %></th>
+                <th class="text-center"><%= gettext("Status") %></th>
+                <th><%= gettext("Updated") %></th>
+                <th><%= gettext("Participants") %></th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+                <%= for invite <- @active_costreams do %>
+                  <tr id={"invite-row-#{invite.id}"}>
+                    <td>
+                      <%= invite.costream.name %>
+                    </td>
+                    <td id={"invite-row-#{invite.id}-status"} class="text-center">
+                      <%= invite.status %>
+                    </td>
+                    <td>
+                      <%= invite.updated_at %>
+                    </td>
+                    <td>
+                      <button
+                      class="btn btn-primary"
+                      id={"show-participants-button-#{invite.id}"}
+                      phx-click="toggle-show-participants"
+                      phx-value-id={invite.costream.id}
+                      title={gettext("Show Participants")}>
+                        <%= gettext("Show Participants") %>
+                      </button>
+                    </td>
+                    <td>
+                      <div class="btn-group">
+                        <%= if invite.status == :pending do %>
+                          <a
+                            type="button"
+                            id={"accept-invite-button-#{invite.id}"}
+                            class="button-link fas fa-check pr-2"
+                            style="color: green"
+                            title={gettext("Accept Invitation")}
+                            href="#"
+                            phx-click="accept_invite"
+                            phx-value-id={invite.id}
+                          >
+                          </a>
+                          <a
+                            type="button"
+                            id={"decline-invite-button-#{invite.id}"}
+                            class="close close-delete pr-2"
+                            title={gettext("Decline Invitation")}
+                            href="#"
+                            phx-click="decline_invite"
+                            phx-value-id={invite.id}
+                          >
+                            &times;
+                          </a>
+                        <% end %>
+                        <%= if invite.status == :accepted and invite.costream.status == :started do %>
+                          <a
+                            type="button"
+                            id={"join-button-#{invite.id}"}
+                            class="btn-link fas fa-angle-double-right pr-2"
+                            title={gettext("Join Co-stream")}
+                            phx-click="join_costream"
+                            phx-value-id={invite.id}
+                            href="#"
+                          >
+                          </a>
+                        <% end %>
+                        <%= if invite.status == :joined do %>
+                          <a
+                            type="button"
+                            id={"leave-button-#{invite.id}"}
+                            class="btn-link fas fa-eject pr-2"
+                            title={gettext("Leave Co-stream")}
+                            phx-click="leave_costream"
+                            phx-value-id={invite.id}
+                            href="#"
+                          >
+                          </a>
+                        <% end %>
+                        <%= if invite.status == :accepted do %>
+                          <a
+                            type="button"
+                            id={"delete-button-#{invite.id}"}
+                            class="close close-delete"
+                            title={gettext("Delete Invitation")}
+                            phx-click="delete_invite"
+                            phx-value-id={invite.id}
+                            href="#"
+                          >
+                            &times;
+                          </a>
+                        <% end %>
+                        <a
+                          type="button"
+                          id={"block-invite-button-#{invite.id}"}
+                          class="button-link fas fa-ban pl-2"
+                          style="color: red"
+                          title={gettext("Block Invitations from this Channel")}
+                          href="#"
+                          phx-click="block_invite"
+                          phx-value-id={invite.id}
+                        >
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

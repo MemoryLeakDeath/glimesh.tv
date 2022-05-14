@@ -28,9 +28,12 @@ defmodule GlimeshWeb.UserLive.Stream do
                "/#{hosting_channel.target.user.username}/?host=#{hosting_channel.host.user.username}"
            )}
         else
+          is_costream = (channel.allow_costream and channel.costream_active)
           if connected?(socket) do
             # Wait until the socket connection is ready to load the stream
-            Process.send(self(), :load_stream, [])
+            if not is_costream do
+              Process.send(self(), :load_stream, [])
+            end
             Streams.subscribe_to(:channel, channel.id)
           end
 
@@ -38,6 +41,8 @@ defmodule GlimeshWeb.UserLive.Stream do
 
           has_some_support_option =
             length(Glimesh.Streams.list_support_tabs(channel.user, channel)) > 0
+
+          show_costream_dashboard_button = (channel.allow_costream and maybe_user.id == streamer.id)
 
           {:ok,
            socket
@@ -63,7 +68,11 @@ defmodule GlimeshWeb.UserLive.Stream do
            |> assign(:stream_metadata, get_last_stream_metadata(channel.stream))
            |> assign(:player_error, nil)
            |> assign(:user, maybe_user)
-           |> assign(:ultrawide, false)}
+           |> assign(:ultrawide, false)
+           |> assign(:show_costream_dashboard_button, show_costream_dashboard_button)
+           |> assign(:show_costream_dashboard_modal, socket.assigns.live_action == :costream_dashboard)
+           |> assign(:is_costream, is_costream)
+          }
         end
 
       nil ->
@@ -106,8 +115,12 @@ defmodule GlimeshWeb.UserLive.Stream do
     params["host"] == nil and params["follow_host"] != "false"
   end
 
-  def handle_params(_unsigned_params, _uri, socket) do
-    {:noreply, socket |> assign(:show_support_modal, socket.assigns.live_action == :support)}
+  def handle_params(_params, _uri, socket) do
+    {:noreply,
+      socket
+      |> assign(:show_support_modal, socket.assigns.live_action == :support)
+      |> assign(:show_costream_dashboard_modal, socket.assigns.live_action == :costream_dashboard)
+    }
   end
 
   def handle_info(:load_stream, socket) do

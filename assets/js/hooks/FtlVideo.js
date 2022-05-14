@@ -13,6 +13,8 @@ export default {
         let saveVolumeChanges = false;
         let currentlyInUltrawide = false;
 
+        console.log("ftlvideo loaded...");
+
         // Handle 21:9 aspect ratio monitors/browsers
         let containerParent = container.parentElement;
         // Get browser aspect ratio
@@ -28,6 +30,10 @@ export default {
         }
 
         this.handleEvent("load_video", ({janus_url, channel_id}) => {
+            if(container.dataset.channelId != null && container.dataset.channelId != channel_id) {
+                console.log("Exiting load_video -- element: " + this.el.id + " channel event: " + channel_id);
+                return;  // this load call is not for us (costreaming/multiple videos)
+            }
             player = new FtlPlayer(container, janus_url, {
                 hooks: {
                     janusSlowLink(uplink, lostPackets) {
@@ -39,7 +45,7 @@ export default {
                     }
                 }
             }); 
-            console.debug(`load_video event for janus_url=${janus_url} channel_id=${channel_id}`)
+            console.log(`load_video event for janus_url=${janus_url} channel_id=${channel_id}`)
             player.init(channel_id);
 
             // Ensure we only save volume changes after the stream has been loaded.

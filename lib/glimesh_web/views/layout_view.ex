@@ -75,6 +75,7 @@ defmodule GlimeshWeb.LayoutView do
     truthy_active(controller_action(conn) == [GlimeshWeb.UserSettingsController, :hosting])
   end
 
+
   def active_channel_addons_path(conn) do
     truthy_active(controller_action(conn) == [GlimeshWeb.UserSettingsController, :addons])
   end
@@ -113,6 +114,10 @@ defmodule GlimeshWeb.LayoutView do
 
   def active_channel_moderator_path(conn) do
     truthy_active(hd(controller_action(conn)) == GlimeshWeb.ChannelModeratorController)
+  end
+
+  def active_channel_costream_path(conn) do
+    truthy_active(hd(controller_action(conn)) == GlimeshWeb.ChannelCostreamingController)
   end
 
   # GCT Path checks

@@ -61,7 +61,7 @@ config :esbuild,
 config :dart_sass,
   version: "1.39.0",
   default: [
-    args: ~w(--load-path=./node_modules css/app.scss ../priv/static/css/app.css),
+    args: ~w(--load-path=./node_modules css/app.scss:../priv/static/css/app.css css/glimesh/components/costream/:../priv/static/css/),
     cd: Path.expand("../assets", __DIR__)
   ]
 
@@ -296,6 +296,24 @@ config :sentry,
   included_environments: [:prod]
 
 config :phoenix_markdown, :server_tags, only: ["privacy.html", "cookies.html", "terms.html"]
+
+config :glimesh, :costream_layout_types,  layout_types: [
+  host: [name: "Host Only", max: 6, visible: 1, active: true, layout: nil],
+  carousel: [name: "Carousel", max: 6, visible: 1, active: true, layout: "costream-layout-carousel.css"],
+  split_vertical: [name: "Split Vertical", max: 6, visible: 2, active: true, layout: "costream-layout-split-vertical.css"],
+  split_horizontal: [name: "Split Horizontal", max: 6, visible: 2, active: true, layout: "costream-layout-split-horizontal.css"],
+  stacked_right: [name: "Stacked right", max: 6, visible: 4, active: true, layout: "costream-layout-stacked-right.css"],
+  stacked_left: [name: "Stacked left", max: 6, visible: 4, active: true, layout: "costream-layout-stacked-left.css"],
+  stacked_top: [name: "Stacked Top Heavy", max: 6, visible: 4, active: true, layout: "costream-layout-stacked-top.css"],
+  stacked_bottom: [name: "Stacked Bottom Heavy", max: 6, visible: 4, active: true, layout: "costream-layout-stacked-bottom.css"],
+  triforce: [name: "Triforce", max: 6, visible: 3, active: true, layout: "costream-layout-triforce.css"],
+  grid: [name: "2x2 Grid", max: 4, visible: 4, active: true, layout: "costream-layout-grid.css"],
+  two_columns: [name: "2x3 Grid", max: 6, visible: 6, active: true, layout: "costream-layout-two-columns.css"],
+  three_columns: [name: "3x2 Grid", max: 6, visible: 6, active: true, layout: "costream-layout-three-columns.css"],
+  custom: [name: "Custom", max: 6, visible: 6, active: true, layout: nil]
+]
+
+config :glimesh, :costream_max_participants, max: 6
 
 import_config "badwords.exs"
 import_config "emotes.exs"

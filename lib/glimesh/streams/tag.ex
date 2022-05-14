@@ -3,6 +3,9 @@ defmodule Glimesh.Streams.Tag do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
+
+  alias Glimesh.Streams.Tag
 
   schema "tags" do
     field :identifier, :string
@@ -51,5 +54,11 @@ defmodule Glimesh.Streams.Tag do
       # When nil let fail normally
       changeset
     end
+  end
+
+  def get_tags(ids) do
+    Tag
+    |> where([t], t.id in ^ids)
+    |> Glimesh.Repo.replica().all()
   end
 end

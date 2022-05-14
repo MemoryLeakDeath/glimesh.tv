@@ -1,0 +1,87 @@
+<%= if live_flash(@flash, :costream_info) do %>
+  <p
+    class="alert alert-success"
+    role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="costream_info"
+  >
+    <%= live_flash(@flash, :costream_info) %>
+  </p>
+<% end %>
+<div class="card col-6">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-10">
+        <h4><%= gettext("Upload Custom Layout") %></h4>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <.form
+      let={f}
+      for={@layout_changeset}
+      class="form_layout_upload"
+      phx-change="save_details"
+    >
+      <h5><%= gettext("Details") %></h5>
+      <div class="form-group">
+        <%= label f, :name %>
+        <%= text_input f, :name, class: "form-control" %>
+        <%= error_tag f, :name %>
+      </div>
+      <div class="form-group">
+        <%= label f, :max_participants %>
+        <%= select f, :max_participants, @max_participants_options, class: "form-control" %>
+        <%= error_tag f, :max_participants %>
+      </div>
+      <div class="form-group">
+        <%= label f, :visible_participants %>
+        <%= select f, :visible_participants, @visible_participants_options, class: "form-control" %>
+        <%= error_tag f, :visible_participants %>
+      </div>
+    </.form>
+  </div>
+</div>
+<div class="card col-6 mt-3">
+  <div class="card-body">
+    <.form
+      let={_f}
+      for={:layouts}
+      id="layout_upload"
+      phx-change="validate_upload"
+      phx-submit="save_upload"
+    >
+      <div
+        class="card-body drag-dropzone"
+        phx-drop-target={@uploads.layout.ref}
+        style="min-height: 300px"
+      >
+        <div class={["text-center", if(length(@uploads.layout.entries) > 0, do: "d-none")]}>
+          <p>
+            <%= gettext(
+              "Layout must be well-formed CSS."
+            ) %>
+          </p>
+          <p>
+            <%= gettext("You can also drag and drop into this section to upload layout.") %>
+          </p>
+          <br>
+          <%= live_file_input(@uploads.layout) %>
+          <br>
+        </div>
+        <div class="row">
+          <%= for entry <- @uploads.layout.entries do %>
+            <p><%= entry.client_name %></p>
+            <%= for err <- upload_errors(@uploads.layout, entry) do %>
+              <p class="alert alert-danger"><%= error_to_string(err) %></p>
+            <% end %>
+          <% end %>
+        </div>
+
+        <%= if length(@uploads.layout.entries) > 0 do %>
+          <button type="submit" class="btn btn-primary"><%= gettext("Upload") %></button>
+        <% end %>
+      </div>
+    </.form>
+  </div>
+</div>

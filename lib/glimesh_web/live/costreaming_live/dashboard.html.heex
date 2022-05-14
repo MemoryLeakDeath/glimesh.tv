@@ -1,0 +1,198 @@
+<div
+  id="costreamDashboardModal"
+  class="live-modal"
+  phx-capture-click="hide_costream_dashboard_modal"
+  phx-window-keydown="hide_costream_dashboard_modal"
+  phx-key="escape"
+  phx-target="#costreamDashboardModal"
+  phx-page-loading
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><%= gettext("Co-Streaming Dashboard") %></h4>
+        <button type="button" class="close" phx-click="hide_costream_dashboard_modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= if live_flash(@flash, :costream_dashboard_info) do %>
+          <p
+            class="alert alert-success"
+            role="alert"
+            phx-click="lv:clear-flash"
+            phx-value-key="costream_info"
+          >
+            <%= live_flash(@flash, :costream_dashboard_info) %>
+          </p>
+        <% end %>
+        <div class="card">
+          <div class="card-header">
+            <div class="float-right">
+              <div class="row">
+                <a class="btn-link" href={Routes.costreaming_settings_path(@socket, :index)}><%= gettext("View More Settings") %>&nbsp;<i class="fas fa-external-link-alt"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" style="padding-top: 5px !important;">
+            <p>
+              <%= gettext(
+                "This dashboard will allow you to quickly join or start co-streams you are a host or participant in.  This page will only display co-streams that are ready to be launched. For more control and the ability to create a co-stream, see the settings page."
+              ) %>
+            </p>
+            <%= if @nothing_to_show do %>
+              <div class="row">
+                <div id="nothing-to-show" class="col-12 card card-body text-center">
+                  <%= gettext(
+                    "You have not hosted or been invited to a co-stream yet!"
+                  ) %>
+                </div>
+              </div>
+            <% else %>
+              <!-- tab bar -->
+              <ul class="nav nav-tabs" id="costream-tablist" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <a href="#" class={"nav-link #{@invitations_tab_bar_active}"} id="costream-invitations-tab-bar" type="button" role="tab" phx-click="activate_invitations_tab" aria-controls="costream-invitations-tab" aria-selected="true"><%= gettext("Accepted Recent Co-streams") %></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a href="#" class={"nav-link #{@hosted_tab_bar_active}"} id="costream-hosted-tab-bar" type="button" role="tab" phx-click="activate_hosted_tab" aria-controls="costream-hosted-tab" aria-selected="false"><%= gettext("Recent Hosted Co-streams") %></a>
+                </li>
+              </ul>
+              <!-- ********** -->
+              <div class="tab-content" id="costream-tabs">
+                <!-- Invitations Table -->
+                <div class={"tab-pane fade #{@invitations_tab_active}"} id="costream-invitations-tab" role="tabpanel">
+                  <div class="row">
+                    <div class="col-12 pt-3">
+                      <table class="table">
+                        <thead style="background-color: var(--input-bg-color);">
+                          <tr>
+                            <th><%= gettext("Co-stream Title") %></th>
+                            <th><%= gettext("Invited") %></th>
+                            <th><%= gettext("Participants") %></th>
+                            <th>&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <%= for invite <- @invites do %>
+                              <tr id={"invite-row-#{invite.id}"}>
+                                <td>
+                                  <%= invite.costream.name %>
+                                </td>
+                                <td>
+                                  <%= invite.inserted_at %>
+                                </td>
+                                <td>
+                                  <%= for guest <- invite.active_guests do %>
+                                    <%= guest %><br>
+                                  <% end %>
+                                </td>
+                                <td>
+                                  <div class="btn-group">
+                                    <%= if invite.costream.status == :started and invite.status != :joined do %>
+                                      <a
+                                        type="button"
+                                        id={"join-button-#{invite.id}"}
+                                        class="btn-link fas fa-angle-double-right"
+                                        title={gettext("Join Co-stream")}
+                                        phx-click="join_costream"
+                                        phx-value-id={invite.id}
+                                        href="#"
+                                      >
+                                      </a>
+                                    <% end %>
+                                    <%= if invite.status == :joined do %>
+                                      <a
+                                        type="button"
+                                        id={"leave-button-#{invite.id}"}
+                                        class="btn-link fas fa-eject"
+                                        title={gettext("Leave Co-stream")}
+                                        phx-click="leave_costream"
+                                        phx-value-id={invite.id}
+                                        href="#"
+                                      >
+                                      </a>
+                                    <% end %>
+                                  </div>
+                                </td>
+                              </tr>
+                            <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <!-- *********************** -->
+                <!-- Hosted Table -->
+                <div class={"tab-pane fade #{@hosted_tab_active}"} id="costream-hosted-tab" role="tabpanel">
+                  <div class="row">
+                    <div class="col-12 pt-3">
+                      <table class="table">
+                        <thead style="background-color: var(--input-bg-color);">
+                          <tr>
+                            <th><%= gettext("Co-stream Title") %></th>
+                            <th><%= gettext("Updated") %></th>
+                            <th><%= gettext("Ready Participants") %></th>
+                            <th>&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <%= for costream <- @hosted do %>
+                              <tr id={"hosted-row-#{costream.id}"}>
+                                <td>
+                                  <%= costream.name %>
+                                </td>
+                                <td>
+                                  <%= costream.updated_at %>
+                                </td>
+                                <td>
+                                  <%= for guest <- costream.active_guests do %>
+                                    <%= guest %><br>
+                                  <% end %>
+                                </td>
+                                <td>
+                                  <div class="btn-group">
+                                    <%= if costream.status == :ready do %>
+                                      <a
+                                        type="button"
+                                        id={"start-costream-button-#{costream.id}"}
+                                        class="button-link fas fa-play pr-2"
+                                        style="color: green"
+                                        title={gettext("Start Costream")}
+                                        phx-click="start_costream"
+                                        phx-value-id={costream.id}
+                                        href="#"
+                                      >
+                                      </a>
+                                    <% end %>
+                                    <%= if costream.status == :started do %>
+                                      <a
+                                        type="button"
+                                        id={"stop-costream-button-#{costream.id}"}
+                                        class="button-link fas fa-stop pr-2"
+                                        style="color: red"
+                                        title={gettext("Stop Costream")}
+                                        phx-click="stop_costream"
+                                        phx-value-id={costream.id}
+                                        href="#"
+                                      >
+                                      </a>
+                                    <% end %>
+                                  </div>
+                                </td>
+                              </tr>
+                            <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <!-- *********************** -->
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

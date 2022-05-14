@@ -1,0 +1,488 @@
+.split_horizontal.content16by9{
+    --grid-columns: [first-column] 0.5fr [second-column] 0.5fr;
+    --grid-rows: [top-row] 1fr;
+    --video-width: 640px;
+    --video-height: 360px;
+    --overlay-width: 630px;
+    --left-overlay-bottom: 160px;
+    --right-overlay-bottom: 160px;
+    --column-gap: 0.1rem;
+    --grid-padding-left: 6rem;
+    --left-swap-button-left: 600px;
+    --left-swap-button-bottom: 390px;
+    --right-swap-button-left: 1260px;
+    --right-swap-button-bottom: 390px;
+    --hidden-swap-button-1-left: 30px;
+    --hidden-swap-button-1-bottom: 360px;
+    --hidden-swap-button-2-left: 30px;
+    --hidden-swap-button-2-bottom: 260px;
+    --hidden-swap-button-3-left: 30px;
+    --hidden-swap-button-3-bottom: 160px;
+    --hidden-swap-button-4-left: 30px;
+    --hidden-swap-button-4-bottom: 60px;
+    --hidden-overlay-1-bottom: 350px;
+    --hidden-overlay-1-left: 20px;
+    --hidden-overlay-2-bottom: 250px;
+    --hidden-overlay-2-left: 20px;
+    --hidden-overlay-3-bottom: 150px;
+    --hidden-overlay-3-left: 20px;
+    --hidden-overlay-4-bottom: 50px;
+    --hidden-overlay-4-left: 20px;
+}
+
+.split_horizontal.content21by9{
+    --grid-columns: [first-column] 0.3fr [second-column] 0.3fr;
+    --grid-rows: [top-row] 0.5fr;
+    --video-width: 1200px;
+    --video-height: 675px;
+    --overlay-width: 1190px;
+    --left-overlay-bottom: 180px;
+    --right-overlay-bottom: 180px;
+    --column-gap: 0.1rem;
+    --grid-padding-left: 9rem;
+    --left-swap-button-left: 1120px;
+    --left-swap-button-bottom: 655px;
+    --right-swap-button-left: 2320px;
+    --right-swap-button-bottom: 655px;
+    --hidden-swap-button-1-left: 60px;
+    --hidden-swap-button-1-bottom: 460px;
+    --hidden-swap-button-2-left: 60px;
+    --hidden-swap-button-2-bottom: 360px;
+    --hidden-swap-button-3-left: 60px;
+    --hidden-swap-button-3-bottom: 260px;
+    --hidden-swap-button-4-left: 60px;
+    --hidden-swap-button-4-bottom: 160px;
+    --hidden-overlay-1-bottom: 450px;
+    --hidden-overlay-1-left: 50px;
+    --hidden-overlay-2-bottom: 350px;
+    --hidden-overlay-2-left: 50px;
+    --hidden-overlay-3-bottom: 250px;
+    --hidden-overlay-3-left: 50px;
+    --hidden-overlay-4-bottom: 150px;
+    --hidden-overlay-4-left: 50px;
+}
+
+.split_horizontal {
+    .carouselnav {
+        display: none;
+        position: absolute;
+    }
+}
+
+.split_horizontal > .costreamVideoGrid {
+    display: grid;
+    grid-template-columns: var(--grid-columns);
+    grid-template-rows: var(--grid-rows);
+    column-gap: var(--column-gap);
+    align-content: center;
+    padding-left: var(--grid-padding-left);
+
+    .costream-overlay{
+        visibility: hidden;
+    }
+
+    .costream-visible.visible-slot-1{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: first-column;
+        grid-row: top-row;
+        margin: auto;
+    }
+
+    .costream-visible.visible-slot-1 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-overlay{
+        position: absolute;
+        visibility: visible;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--left-overlay-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-swap, .costream-visible.visible-slot-1 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--left-swap-button-bottom);
+        left: var(--left-swap-button-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-visible.visible-slot-2{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: second-column;
+        grid-row: top-row;
+        margin: auto;
+    }
+    .costream-visible.visible-slot-2 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-2:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--right-overlay-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    
+    .costream-visible.visible-slot-2:hover > .costream-swap, .costream-visible.visible-slot-2 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--right-swap-button-bottom);
+        left: var(--right-swap-button-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+    
+    .costream-hidden.hidden-slot-1 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-1-bottom);
+        left: var(--hidden-overlay-1-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    
+    .costream-hidden.hidden-slot-1:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-1-bottom);
+        left: var(--hidden-overlay-1-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    .costream-hidden.hidden-slot-1:hover > .costream-swap, .costream-hidden.hidden-slot-1 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-1-bottom);
+        left: var(--hidden-swap-button-1-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-2-bottom);
+        left: var(--hidden-overlay-2-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-2-bottom);
+        left: var(--hidden-overlay-2-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2:hover > .costream-swap, .costream-hidden.hidden-slot-2 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-2-bottom);
+        left: var(--hidden-swap-button-2-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden.hidden-slot-3 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-3-bottom);
+        left: var(--hidden-overlay-3-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-3:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-3-bottom);
+        left: var(--hidden-overlay-3-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-3:hover > .costream-swap, .costream-hidden.hidden-slot-3 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-3-bottom);
+        left: var(--hidden-swap-button-3-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden.hidden-slot-4 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-4-bottom);
+        left: var(--hidden-overlay-4-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-4:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-4-bottom);
+        left: var(--hidden-overlay-4-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-4:hover > .costream-swap, .costream-hidden.hidden-slot-4 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-4-bottom);
+        left: var(--hidden-swap-button-4-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden > video{
+        display:none;
+    }
+
+    .costream-hidden{
+        display:none;
+    }
+
+    .costream-swap{
+        visibility: hidden;
+    }
+
+}

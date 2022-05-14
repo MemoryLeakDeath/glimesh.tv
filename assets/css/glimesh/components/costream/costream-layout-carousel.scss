@@ -1,0 +1,128 @@
+.carousel.content16by9{
+    --main-video-width: 1280px;
+    --main-video-height: 720px;
+    --main-overlay-width: 1270px;
+    --main-overlay-bottom: 100px;
+    --main-video-margin: 3.3rem;
+}
+
+.carousel.content21by9{
+    --main-video-width: 2080px;
+    --main-video-height: 1170px;
+    --main-overlay-width: 1910px;
+    --main-overlay-bottom: 150px;
+    --main-video-margin: 16rem;
+}
+
+.costream-section-padding {
+    padding-top: 400px;
+}
+
+.costreamVideoGrid {
+    display: contents;
+}
+
+.carousel{
+    display: inline-grid;
+    grid-template-columns: [main-column] 1fr;
+    grid-template-rows: [main-row] 1fr [second-row] 1fr;
+    align-content: center;
+
+    .costream-overlay{
+        visibility: hidden;
+    }
+
+    .previousCostreamButton, .nextCostreamButton {
+        position: absolute;
+        margin-top: 25%;
+        border-radius: 50%;
+        height: 4rem;
+        width: 4rem;
+        background-color: rgba(0, 0, 0, 0.35);
+        z-index: 300;
+    }
+
+    .previousCostreamButtonImage, .nextCostreamButtonImage {
+        position: absolute;
+        margin-top: 25%;
+        border-radius: 50%;
+        height: 4rem;
+        width: 4rem;
+        opacity: .30;
+        z-index: 200;
+    }
+
+    .previousCostreamButton > i {
+        color: white;
+        font-size: 30px;
+        font-weight: bolder;
+        text-shadow: 2px 2px 8px #000;
+        opacity: 1; 
+        z-index: 400;
+    }
+
+    .nextCostreamButton > i {
+        color: white;
+        font-size: 30px;
+        font-weight: bolder;
+        text-shadow: 2px 2px 8px #000;
+        opacity: 1; 
+        z-index: 400;
+    }
+
+    .previousCostreamButton, .previousCostreamButtonImage {
+        left: -1rem;
+    }
+
+    .nextCostreamButton, .nextCostreamButtonImage {
+        right: -1rem;
+    }
+
+    .costream-visible.visible-slot-1{
+        width: var(--main-video-width);
+        height: var(--main-video-height);
+        margin-left: var(--main-video-margin);
+        grid-column: main-column;
+        grid-row: main-row;
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-overlay,
+    .costream-visible.visible-slot-1.active > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        width: var(--main-overlay-width);
+        height: 50px;
+        bottom: var(--main-overlay-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden > video{
+        display:none;
+    }
+
+    .costream-hidden{
+        display:none;
+    }
+
+    .costream-swap{
+        display: none;
+    }
+
+}

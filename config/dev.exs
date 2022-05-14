@@ -26,7 +26,7 @@ config :esbuild,
 config :dart_sass,
   version: "1.39.0",
   default: [
-    args: ~w(--load-path=./node_modules css/app.scss ../priv/public/css/app.css),
+    args: ~w(--load-path=./node_modules css/app.scss:../priv/public/css/app.css css/glimesh/components/costream:../priv/public/css),
     cd: Path.expand("../assets", __DIR__)
   ]
 

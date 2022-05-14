@@ -1,0 +1,422 @@
+.two_columns.content16by9{
+    --grid-columns: [first-column] 0.4fr [second-column] 0.4fr;
+    --grid-rows: [top-row] 1fr [middle-row] 1fr [bottom-row] 1fr;
+    --video-width: 426px;
+    --video-height: 240px;
+    --overlay-width: 416px;
+    --top-overlay-1-bottom: 560px;
+    --top-overlay-2-bottom: 560px;
+    --middle-overlay-3-bottom: 320px;
+    --middle-overlay-4-bottom: 320px;
+    --bottom-overlay-5-bottom: 75px;
+    --bottom-overlay-6-bottom: 75px;
+    --column-gap: 0.1rem;
+    --grid-padding-left: 12rem;
+    --top-swap-button-1-left: 520px;
+    --top-swap-button-1-bottom: 670px;
+    --top-swap-button-2-left: 1010px;
+    --top-swap-button-2-bottom: 670px;
+    --middle-swap-button-3-left: 520px;
+    --middle-swap-button-3-bottom: 430px;
+    --middle-swap-button-4-left: 1010px;
+    --middle-swap-button-4-bottom: 430px;
+    --bottom-swap-button-5-left: 520px;
+    --bottom-swap-button-5-bottom: 190px;
+    --bottom-swap-button-6-left: 1010px;
+    --bottom-swap-button-6-bottom: 190px;
+}
+
+.two_columns.content21by9{
+    --grid-columns: [first-column] 0.35fr [second-column] 0.35fr;
+    --grid-rows: [top-row] 0.5fr [middle-row] 0.5fr [bottom-row] 0.5fr;
+    --video-width: 640px;
+    --video-height: 360px;
+    --overlay-width: 630px;
+    --top-overlay-1-bottom: 820px;
+    --top-overlay-2-bottom: 820px;
+    --middle-overlay-3-bottom: 460px;
+    --middle-overlay-4-bottom: 460px;
+    --bottom-overlay-5-bottom: 100px;
+    --bottom-overlay-6-bottom: 100px;
+    --column-gap: 0.1rem;
+    --grid-padding-left: 24rem;
+    --top-swap-button-1-left: 910px;
+    --top-swap-button-1-bottom: 1020px;
+    --top-swap-button-2-left: 1690px;
+    --top-swap-button-2-bottom: 1020px;
+    --middle-swap-button-3-left: 910px;
+    --middle-swap-button-3-bottom: 660px;
+    --middle-swap-button-4-left: 1690px;
+    --middle-swap-button-4-bottom: 660px;
+    --bottom-swap-button-5-left: 910px;
+    --bottom-swap-button-5-bottom: 300px;
+    --bottom-swap-button-6-left: 1690px;
+    --bottom-swap-button-6-bottom: 300px;
+}
+
+.two_columns {
+    .carouselnav {
+        display: none;
+        position: absolute;
+    }
+}
+
+.two_columns > .costreamVideoGrid {
+    display: grid;
+    grid-template-columns: var(--grid-columns);
+    grid-template-rows: var(--grid-rows);
+    column-gap: var(--column-gap);
+    align-content: center;
+    padding-left: var(--grid-padding-left);
+
+    .costream-overlay{
+        visibility: hidden;
+    }
+
+    .costream-visible.visible-slot-1{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: first-column;
+        grid-row: top-row;
+    }
+
+    .costream-visible.visible-slot-1 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-overlay{
+        position: absolute;
+        visibility: visible;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--top-overlay-1-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-swap, .costream-visible.visible-slot-1 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--top-swap-button-1-bottom);
+        left: var(--top-swap-button-1-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-visible.visible-slot-2{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: second-column;
+        grid-row: top-row;
+        align-self: center;
+    }
+    .costream-visible.visible-slot-2 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-3{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: first-column;
+        grid-row: middle-row;
+    }
+
+    .costream-visible.visible-slot-3 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-4{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: second-column;
+        grid-row: middle-row;
+    }
+
+    .costream-visible.visible-slot-4 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-5{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: first-column;
+        grid-row: bottom-row;
+    }
+
+    .costream-visible.visible-slot-5 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-6{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: second-column;
+        grid-row: bottom-row;
+    }
+
+    .costream-visible.visible-slot-6 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-2:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--top-overlay-2-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    
+    .costream-visible.visible-slot-2:hover > .costream-swap, .costream-visible.visible-slot-2 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--top-swap-button-2-bottom);
+        left: var(--top-swap-button-2-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-visible.visible-slot-3:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--middle-overlay-3-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-3:hover > .costream-swap, .costream-visible.visible-slot-3 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--middle-swap-button-3-bottom);
+        left: var(--middle-swap-button-3-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+    
+    .costream-visible.visible-slot-4:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--middle-overlay-4-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-4:hover > .costream-swap, .costream-visible.visible-slot-4 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--middle-swap-button-4-bottom);
+        left: var(--middle-swap-button-4-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+    .costream-visible.visible-slot-5:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--bottom-overlay-5-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-5:hover > .costream-swap, .costream-visible.visible-slot-5 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--bottom-swap-button-5-bottom);
+        left: var(--bottom-swap-button-5-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+    .costream-visible.visible-slot-6:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--bottom-overlay-6-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-6:hover > .costream-swap, .costream-visible.visible-slot-6 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--bottom-swap-button-6-bottom);
+        left: var(--bottom-swap-button-6-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden > video{
+        display:none;
+    }
+
+    .costream-hidden{
+        display:none;
+    }
+
+    .costream-swap{
+        visibility: hidden;
+    }
+
+}

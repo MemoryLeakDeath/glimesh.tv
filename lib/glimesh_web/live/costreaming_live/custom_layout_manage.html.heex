@@ -1,0 +1,136 @@
+<%= if live_flash(@flash, :costream_info) do %>
+  <p
+    class="alert alert-success"
+    role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="costream_info"
+  >
+    <%= live_flash(@flash, :costream_info) %>
+  </p>
+<% end %>
+<div class="card col-12">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-10">
+        <h4><%= gettext("Manage Custom Layouts") %></h4>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-10">
+        <h4><%= gettext("Approved Custom Layouts") %></h4>
+      </div>
+    </div>
+
+    <!-- Approved Layouts Table -->
+    <div class="row">
+      <div class="col-12 pt-3">
+        <table class="table">
+          <thead style="background-color: var(--input-bg-color);">
+            <tr>
+              <th><%= gettext("Name") %></th>
+              <th class="text-center"><%= gettext("Status") %></th>
+              <th><%= gettext("Max Participants") %></th>
+              <th><%= gettext("Visible Participants") %></th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+              <%= for approved <- @approved_layouts do %>
+                <tr id={"approved-row-#{approved.id}"}>
+                  <td>
+                    <%= approved.name %>
+                  </td>
+                  <td id={"approved-row-#{approved.id}-status"} class="text-center">
+                    Status
+                  </td>
+                  <td>
+                    <%= approved.max_participants %>
+                  </td>
+                  <td>
+                    <%= approved.visible_participants %>
+                  </td>
+                  <td>
+                    <div class="btn-group">
+                        <a
+                          type="button"
+                          id={"delete-layout-button-#{approved.id}"}
+                          class="close close-delete pr-2"
+                          title={gettext("Remove Layout")}
+                          href="#"
+                          phx-click="delete_layout"
+                          phx-value-id={approved.id}
+                        >
+                          &times;
+                        </a>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row pt-4">
+      <div class="col-10">
+        <h4><%= gettext("Uploaded Custom Layouts") %></h4>
+      </div>
+    </div>
+    <!-- Pending/Rejected Layouts Table -->
+    <div class="row">
+      <div class="col-12 pt-3">
+        <table class="table">
+          <thead style="background-color: var(--input-bg-color);">
+            <tr>
+              <th><%= gettext("Name") %></th>
+              <th class="text-center"><%= gettext("Status") %></th>
+              <th><%= gettext("Max Participants") %></th>
+              <th><%= gettext("Visible Participants") %></th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+              <%= for pending <- @pending_layouts do %>
+                <tr id={"pending-row-#{pending.id}"}>
+                  <td>
+                    <%= pending.name %>
+                  </td>
+                  <td id={"pending-row-#{pending.id}-status"} class="text-center">
+                    <%= cond do %>
+                      <% !is_nil(pending.rejected_at) -> %>
+                        <%= gettext("Rejected") %>
+                      <% true -> %>
+                        <%= gettext("Pending") %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <%= pending.max_participants %>
+                  </td>
+                  <td>
+                    <%= pending.visible_participants %>
+                  </td>
+                  <td>
+                    <div class="btn-group">
+                        <a
+                          type="button"
+                          id={"delete-layout-button-#{pending.id}"}
+                          class="close close-delete pr-2"
+                          title={gettext("Remove Layout")}
+                          href="#"
+                          phx-click="delete_layout"
+                          phx-value-id={pending.id}
+                        >
+                          &times;
+                        </a>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

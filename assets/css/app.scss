@@ -65,6 +65,9 @@ $fa-font-path: "/fa-fonts";
 @import "glimesh/pages/dmca";
 @import "glimesh/pages/hosting.scss";
 
+// Costreaming Built-in Layouts
+//@import "glimesh/components/costream/stacked_right.scss";
+
 @include media-breakpoint-up(lg) {
     .layout-spacing {
         padding-bottom: 40px;
@@ -325,6 +328,14 @@ $fa-font-path: "/fa-fonts";
     transform: skewY(10deg);
 }
 
+.button-link,
+.button-link:hover {
+    display: flex;
+    align-items: center;
+    color: var(--body-color);
+    text-decoration-line: none;
+    vertical-align: baseline;
+}
 .bg-EventsTeam {
     background: #288b8c
 }

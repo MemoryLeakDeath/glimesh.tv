@@ -1,0 +1,473 @@
+.triforce.content16by9{
+    --grid-columns: [first-column] 1fr [second-column] 1fr [second-column-end];
+    --grid-rows: [top-row] 1fr [bottom-row] 1fr;
+    --video-width: 640px;
+    --video-height: 360px;
+    --overlay-width: 630px;
+    --top-overlay-bottom: 450px;
+    --bottom-overlay-1-bottom: 90px;
+    --bottom-overlay-2-bottom: 90px;
+    --column-gap: 0.1rem;
+    --grid-padding-left: 3rem;
+    --top-swap-button-left: 940px;
+    --top-swap-button-bottom: 660px;
+    --bottom-swap-button-1-left: 570px;
+    --bottom-swap-button-1-bottom: 300px;
+    --bottom-swap-button-2-left: 1230px;
+    --bottom-swap-button-2-bottom: 300px;
+    --hidden-swap-button-1-left: 60px;
+    --hidden-swap-button-1-bottom: 610px;
+    --hidden-swap-button-2-left: 60px;
+    --hidden-swap-button-2-bottom: 510px;
+    --hidden-swap-button-3-left: 60px;
+    --hidden-swap-button-3-bottom: 410px;
+    --hidden-overlay-1-bottom: 600px;
+    --hidden-overlay-1-left: 50px;
+    --hidden-overlay-2-bottom: 500px;
+    --hidden-overlay-2-left: 50px;
+    --hidden-overlay-3-bottom: 400px;
+    --hidden-overlay-3-left: 50px;
+}
+
+.triforce.content21by9{
+    --grid-columns: [first-column] 0.25fr [second-column] 0.25fr [second-column-end];
+    --grid-rows: [top-row] 0.5fr [bottom-row] 0.5fr;
+    --video-width: 1024px;
+    --video-height: 576px;
+    --overlay-width: 1014px;
+    --top-overlay-bottom: 700px;
+    --bottom-overlay-1-bottom: 120px;
+    --bottom-overlay-2-bottom: 120px;
+    --column-gap: 0.1rem;
+    --grid-padding-left: 12rem;
+    --top-swap-button-left: 1540px;
+    --top-swap-button-bottom: 1090px;
+    --bottom-swap-button-1-left: 1010px;
+    --bottom-swap-button-1-bottom: 510px;
+    --bottom-swap-button-2-left: 2050px;
+    --bottom-swap-button-2-bottom: 510px;
+    --hidden-swap-button-1-left: 260px;
+    --hidden-swap-button-1-bottom: 860px;
+    --hidden-swap-button-2-left: 260px;
+    --hidden-swap-button-2-bottom: 760px;
+    --hidden-swap-button-3-left: 260px;
+    --hidden-swap-button-3-bottom: 660px;
+    --hidden-overlay-1-bottom: 850px;
+    --hidden-overlay-1-left: 250px;
+    --hidden-overlay-2-bottom: 750px;
+    --hidden-overlay-2-left: 250px;
+    --hidden-overlay-3-bottom: 650px;
+    --hidden-overlay-3-left: 250px;
+}
+
+.triforce {
+    .carouselnav {
+        display: none;
+        position: absolute;
+    }
+}
+
+.triforce > .costreamVideoGrid {
+    display: grid;
+    grid-template-columns: var(--grid-columns);
+    grid-template-rows: var(--grid-rows);
+    column-gap: var(--column-gap);
+    align-content: center;
+    padding-left: var(--grid-padding-left);
+
+    .costream-overlay{
+        visibility: hidden;
+    }
+
+    .costream-visible.visible-slot-1{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column-start: first-column;
+        grid-column-end: second-column-end;
+        grid-row: top-row;
+        margin: auto;
+    }
+
+    .costream-visible.visible-slot-1 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-overlay{
+        position: absolute;
+        visibility: visible;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--top-overlay-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-swap, .costream-visible.visible-slot-1 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--top-swap-button-bottom);
+        left: var(--top-swap-button-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-visible.visible-slot-2{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: first-column;
+        grid-row: bottom-row;
+        align-self: center;
+    }
+    .costream-visible.visible-slot-2 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-3{
+        width: var(--video-width);
+        height: var(--video-height);
+        grid-column: second-column;
+        grid-row: bottom-row;
+    }
+
+    .costream-visible.visible-slot-3 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-2:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--bottom-overlay-1-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    
+    .costream-visible.visible-slot-2:hover > .costream-swap, .costream-visible.visible-slot-2 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--bottom-swap-button-1-bottom);
+        left: var(--bottom-swap-button-1-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-visible.visible-slot-3:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--overlay-width);
+        height: 50px;
+        bottom: var(--bottom-overlay-2-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-3:hover > .costream-swap, .costream-visible.visible-slot-3 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--bottom-swap-button-2-bottom);
+        left: var(--bottom-swap-button-2-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+    
+    .costream-hidden.hidden-slot-1 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-1-bottom);
+        left: var(--hidden-overlay-1-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    
+    .costream-hidden.hidden-slot-1:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-1-bottom);
+        left: var(--hidden-overlay-1-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    .costream-hidden.hidden-slot-1:hover > .costream-swap, .costream-hidden.hidden-slot-1 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-1-bottom);
+        left: var(--hidden-swap-button-1-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-2-bottom);
+        left: var(--hidden-overlay-2-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-2-bottom);
+        left: var(--hidden-overlay-2-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2:hover > .costream-swap, .costream-hidden.hidden-slot-2 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-2-bottom);
+        left: var(--hidden-swap-button-2-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden.hidden-slot-3 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-3-bottom);
+        left: var(--hidden-overlay-3-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-3:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-3-bottom);
+        left: var(--hidden-overlay-3-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-3:hover > .costream-swap, .costream-hidden.hidden-slot-3 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-3-bottom);
+        left: var(--hidden-swap-button-3-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden > video{
+        display:none;
+    }
+
+    .costream-hidden{
+        display:none;
+    }
+
+    .costream-swap{
+        visibility: hidden;
+    }
+
+}

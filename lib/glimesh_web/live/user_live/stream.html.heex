@@ -170,33 +170,45 @@
               </div>
             </div>
           <% else %>
-            <div
-              id="video-container"
-              class={
-                [
-                  "embed-responsive",
-                  if(@ultrawide, do: "embed-responsive-21by9", else: "embed-responsive-16by9")
-                ]
-              }
-            >
-              <video
-                id="video-player"
-                class="embed-responsive-item"
-                phx-hook="FtlVideo"
-                controls
-                playsinline
-                poster={@channel_poster}
+            <%= if @is_costream do %>
+              <%= live_render(@socket, GlimeshWeb.CostreamingLive.Components.CostreamVideoSection,
+                id: "costream-stream-video-section",
+                container: {:div, class: "col p-0"},
+                session: %{
+                  "channel_id" => @channel.id,
+                  "costream_id" => @channel.costream_id,
+                  "ultrawide" => @ultrawide
+                }
+              ) %>
+            <% else %>
+              <div
+                id="video-container"
+                class={
+                  [
+                    "embed-responsive",
+                    if(@ultrawide, do: "embed-responsive-21by9", else: "embed-responsive-16by9")
+                  ]
+                }
               >
-              </video>
-              <div id="video-loading-container" class="">
-                <div class="lds-ring">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
+                <video
+                  id="video-player"
+                  class="embed-responsive-item"
+                  phx-hook="FtlVideo"
+                  controls
+                  playsinline
+                  poster={@channel_poster}
+                >
+                </video>
+                <div id="video-loading-container" class="">
+                  <div class="lds-ring">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
                 </div>
               </div>
-            </div>
+            <% end %>
           <% end %>
         </div>
         <div class="card-footer p-1 d-none d-sm-block">
@@ -246,6 +258,13 @@
             </div>
             <div class="col-4 align-self-center">
               <div class="float-right mr-sm-2">
+                <%= if @show_costream_dashboard_button do %>
+                  <%= live_patch to: Routes.user_stream_path(@socket, :costream_dashboard, @channel.user.username), class: "btn btn-primary" do %>
+                    <span class="d-lg-block">
+                      <i class="fas fa-satellite-dish"></i> <%= gettext("Co-stream") %>
+                    </span>
+                  <% end %>
+                <% end %>
                 <div class="d-inline-block mr-sm-2">
                   <a
                     href="#"
@@ -426,6 +445,15 @@ updated_at: <%= @stream_metadata.updated_at %>
       "streamer" => @streamer,
       "tab" => @support_modal_tab,
       "stripe_session_id" => @stripe_session_id
+    }
+  ) %>
+<% end %>
+
+<%= if @show_costream_dashboard_button and @show_costream_dashboard_modal do %>
+  <%= live_render(@socket, GlimeshWeb.CostreamingLive.Dashboard,
+    id: "costream-dashboard-modal",
+    session: %{
+      "streamer" => @streamer
     }
   ) %>
 <% end %>

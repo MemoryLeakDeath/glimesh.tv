@@ -1,0 +1,213 @@
+<%= if live_flash(@flash, :costream_info) do %>
+  <p
+    class="alert alert-success"
+    role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="costream_info"
+  >
+    <%= live_flash(@flash, :costream_info) %>
+  </p>
+<% end %>
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-8">
+        <h4><%= if @page_action == "create", do: gettext("Create new co-stream"), else: gettext("Manage co-stream") %></h4>
+      </div>
+      <div class="col-">
+        <a 
+          type="button"
+          class="btn btn-danger float-right"
+          href={Routes.costreaming_settings_path(@socket, :index_host)}
+          >
+          <i class="fas fa-arrow-left"></i>&nbsp;<%= gettext("Back to host co-stream settings") %>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <.form
+      let={f}
+      for={@costream_changeset}
+      class="form_manage_costreaming"
+      phx-submit={ if @page_action == "create", do: "create_costream", else: "update_costream" }
+      phx-change="update_details"
+    >
+      <h5><%= gettext("Details") %></h5>
+      <div class="form-group">
+        <%= label f, :name %>
+        <%= text_input f, :name, class: "form-control" %>
+        <%= error_tag f, :name %>
+      </div>
+      <div class="row mt-4">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <%= label(f, :category_tags, gettext("Tags")) %>
+            <.live_component
+              module={GlimeshWeb.TagifyComponent}
+              id={"tag-selector-#{System.unique_integer([:positive])}"}
+              form={f}
+              field={:category_tags}
+              value={@existing_tags}
+              placeholder={gettext("Search for tags to describe your stream")}
+              max_options={10}
+              create_regex="^[A-Za-z0-9: -]{2,18}$"
+              allow_edit="true"
+              category={@category}
+              search_func={&search_tags/2}
+            />
+            <%= error_tag(f, :category_tags) %>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <%= label(f, gettext("Channel Category")) %>
+            <%= select(f, :category_id, @categories, class: "form-control", selected: @channel.category_id) %>
+            <%= error_tag(f, :category_id) %>
+          </div>
+          <div class="form-group">
+            <%= label(f, :subcategory, @subcategory_label) %>
+            <.live_component
+              module={GlimeshWeb.TagifyComponent}
+              id={"category-selector-#{System.unique_integer([:positive])}"}
+              form={f}
+              field={:subcategory}
+              max_options={1}
+              allow_edit="true"
+              create_regex="^[A-Za-z0-9: -]{2,40}$"
+              value={@existing_subcategory}
+              placeholder={@subcategory_placeholder}
+              category={@category}
+              search_func={&search_categories/2}
+            />
+            <p><%= @subcategory_attribution %></p>
+            <%= error_tag(f, :subcategory) %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= label f, :layout_type %>
+        <%= select f, :layout_type, @layout_options, class: "form-control" %>
+        <%= error_tag f, :layout_type %>
+      </div>
+      <div class="form-group">
+        <%= label f, :max_participants %>
+        <%= select f, :max_participants, @max_participants_options, class: "form-control" %>
+        <%= error_tag f, :max_participants %>
+      </div>
+    <%= if @page_action == "create" do %>
+      <%= submit gettext("Create"), class: "btn btn-primary" %>
+    <% else %>
+      <%= submit gettext("Update"), class: "btn btn-primary" %>
+    <% end %>
+    </.form>
+    <%= if @page_action == "edit" do %>
+      <div class="row mt-2">&nbsp;</div>
+      <.form 
+        let={g} 
+        for={:nothing} 
+        class="form_add_invite" 
+        phx-change="suggest" 
+        phx-submit="invite_channel"
+        phx-value-name={@add_channel}
+        phx-value-selected={@add_channel_selected_value}
+      >
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <div class="custom-control custom-switch">
+                <%= checkbox(g, :type, class: "custom-control-input", checked_value: "guest", unchecked_value: "regular") %>
+                <%= label(g, :type, gettext("Guest Invite"),
+                  class: "custom-control-label"
+                ) %>
+                <%= error_tag(g, :type) %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-lg-6">
+            <div class="input-group">
+              <%= live_component(GlimeshWeb.Components.ChannelLookupTypeahead,
+                id: "channel_lookup",
+                user: @user,
+                field: "add_channel",
+                value: @add_channel,
+                class: "form-control pl-0 channel-typeahead-input",
+                matches: @matches,
+                timeout: 700,
+                extra_params: %{"maxlength" => "24"}
+              ) %>
+              <div class="input-group-append">
+                <button
+                  id="invite-channel-button"
+                  type="submit"
+                  class="btn btn-primary btn-block"
+                  aria-label="Invite"
+                >
+                  <span aria-hidden="true"><%= gettext("Invite") %></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </.form>
+    <% end %>
+  </div>
+  <%= if @page_action == "edit" do %>
+    <div class="row">
+      <div class="col-12 pt-3">
+        <table class="table">
+          <thead style="background-color: var(--input-bg-color);">
+            <tr>
+              <th><%= gettext("Channel") %></th>
+              <th><%= gettext("Updated") %></th>
+              <th><%= gettext("Type") %></th>
+              <th class="text-center"><%= gettext("Status") %></th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for invite <- @existing_invites do %>
+                <tr id={"invite-row-#{invite.id}"}>
+                  <td>
+                    <img
+                      class="img-avatar"
+                      src={
+                        Glimesh.Avatar.url({invite.channel.user.avatar, invite.channel.user}, :original)
+                      }
+                      width="50"
+                      height="50"
+                    />
+                    &nbsp;<%= invite.channel.user.displayname %>
+                  </td>
+                  <td>
+                    <%= invite.updated_at %>
+                  </td>
+                  <td>
+                    <%= invite.type %>
+                  </td>
+                  <td id={"invite-row-#{invite.id}-status"} class="text-center">
+                    <%= invite.status %>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      id={"remove-invite-button-#{invite.id}"}
+                      class="close close-delete"
+                      title={gettext("Cancel Invitation")}
+                      phx-click="delete_invite"
+                      phx-value-invite-id={invite.id}
+                      phx-value-costream-id={invite.costream_id}
+                    >
+                      &times;
+                    </button>
+                  </td>
+                </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>

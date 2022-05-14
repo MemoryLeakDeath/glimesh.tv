@@ -1,0 +1,201 @@
+<%= if live_flash(@flash, :costream_info) do %>
+  <p
+    class="alert alert-success"
+    role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="costream_info"
+  >
+    <%= live_flash(@flash, :costream_info) %>
+  </p>
+<% end %>
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-8">
+        <h4><%= gettext("Host a Co-Stream") %></h4>
+      </div>
+      <div class="col-">
+        <a
+          type="button"
+          class="btn btn-danger float-right"
+          href={Routes.costreaming_settings_path(@socket, :index)}
+          >
+          <i class="fas fa-arrow-left"></i>&nbsp;<%= gettext("Back to co-stream settings") %>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <p>
+      <%= gettext("Create and manage co-streams with other Glimesh channels.") %>
+    </p>
+    <%= if false do %>
+      <div class="row">
+        <div id="not-qualified" class="col-12 card card-body text-center">
+          <%= gettext(
+            "You have not met the minimum qualifications to co-stream, see list above for details"
+          ) %>
+        </div>
+      </div>
+    <% else %>
+      <!-- Show Participants Modal -->
+      <%= if @show_participants do %>
+        <div
+          id="show-participants"
+          class="live-modal"
+          phx-capture-click="toggle-show-participants"
+          phx-window-keydown="toggle-show-participants"
+          phx-key="escape"
+          phx-target="#show-participants"
+          phx-page-loading
+        >
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title"><%= gettext("Invited Channels for %{costream_name}", costream_name: @show_participants_costream_name) %></h5>
+                <button type="button" class="close" phx-click="toggle-show-participants" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <!-- Participants Channels List -->
+                <div class="row">
+                  <div class="col-12 pt-3">
+                    <table class="table">
+                      <thead style="background-color: var(--input-bg-color);">
+                        <tr>
+                          <th><%= gettext("Name") %></th>
+                          <th><%= gettext("Status") %></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <%= for participant <- @show_participants_channels do %>
+                            <tr id={"participant-row-#{participant.id}"}>
+                              <td>
+                                <%= participant.channel.user.displayname %>
+                              </td>
+                              <td>
+                                <%= participant.status %>
+                              </td>
+                            </tr>
+                          <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary" phx-click="toggle-show-participants" aria-label="Close">
+                  <%= gettext("Close") %>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <!-- **************** -->
+      <div class="row col-4">
+        <div class="col">
+          <a href={Routes.costreaming_settings_path(@socket, :create)} type="button" class="btn btn-primary"><%= gettext("Create new co-stream") %></a>
+        </div>
+        <div class="col">
+          <a href={Routes.costreaming_settings_path(@socket, :custom_layout_manage)} type="button" class="btn btn-primary"><%= gettext("Manage Custom Layouts") %></a>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-10">
+          <h4><%= gettext("Hosted Co-streams") %></h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 pt-3">
+          <table class="table">
+            <thead style="background-color: var(--input-bg-color);">
+              <tr>
+                <th><%= gettext("Co-stream Title") %></th>
+                <th class="text-center"><%= gettext("Status") %></th>
+                <th><%= gettext("Created") %></th>
+                <th><%= gettext("Invitations") %></th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+                <%= for costream <- @active_costreams do %>
+                  <tr id={"costream-row-#{costream.id}"}>
+                    <td>
+                      <%= costream.name %>
+                    </td>
+                    <td id={"costream-row-#{costream.id}-status"} class="text-center">
+                      <%= costream.status %>
+                    </td>
+                    <td>
+                      <%= costream.inserted_at %>
+                    </td>
+                    <td>
+                      <button
+                      class="btn btn-primary"
+                      id={"show-participants-button-#{costream.id}"}
+                      phx-click="toggle-show-participants"
+                      phx-value-id={costream.id}
+                      title={gettext("Show Invited Channels")}>
+                        <%= gettext("Show Invited Channels") %>
+                      </button>
+                    </td>
+                    <td>
+                      <div class="btn-group">
+                        <%= if costream.status == :ready do %>
+                          <a
+                            type="button"
+                            id={"start-costream-button-#{costream.id}"}
+                            class="button-link fas fa-play pr-2"
+                            style="color: green"
+                            title={gettext("Start Costream")}
+                            phx-click="start_costream"
+                            phx-value-id={costream.id}
+                            href="#"
+                          >
+                          </a>
+                        <% end %>
+                        <%= if costream.status == :started do %>
+                          <a
+                            type="button"
+                            id={"stop-costream-button-#{costream.id}"}
+                            class="button-link fas fa-stop pr-2"
+                            style="color: red"
+                            title={gettext("Stop Costream")}
+                            phx-click="stop_costream"
+                            phx-value-id={costream.id}
+                            href="#"
+                          >
+                          </a>
+                        <% end %>
+                        <a
+                          type="button"
+                          id={"edit-costream-button-#{costream.id}"}
+                          class="button-link fas fa-edit pr-2"
+                          title={gettext("Manage Costream")}
+                          href={Routes.costreaming_settings_path(@socket, :edit, costream.id)}
+                        >
+                        </a>
+                        <button
+                          type="button"
+                          id={"remove-costream-button-#{costream.id}"}
+                          class="close close-delete"
+                          title={gettext("Delete costream")}
+                          phx-click="delete_costream"
+                          phx-value-id={costream.id}
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

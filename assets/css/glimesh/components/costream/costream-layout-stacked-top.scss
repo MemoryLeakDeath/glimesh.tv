@@ -1,0 +1,463 @@
+.stacked_top.content16by9{
+    --grid-columns: [first-column] 0.3fr [second-column] 0.3fr [third-column] 0.3fr [third-column-end];
+    --grid-rows: [small-row] 0.5fr [main-row] 1.5fr;
+    --main-video-width: 880px;
+    --main-video-height: 495px;
+    --small-video-width: 426px;
+    --small-video-height: 240px;
+    --main-overlay-width: 870px;
+    --small-overlay-width: 416px;
+    --main-overlay-bottom: 75px;
+    --small-overlay-1-bottom: 565px;
+    --small-overlay-2-bottom: 565px;
+    --small-overlay-3-bottom: 565px;
+    --column-gap: 0.1rem;
+    --grid-padding-left: 3rem;
+    --main-swap-button-left: 950px;
+    --main-swap-button-bottom: 400px;
+    --small-swap-button-1-left: 380px;
+    --small-swap-button-1-bottom: 680px;
+    --small-swap-button-2-left: 800px;
+    --small-swap-button-2-bottom: 680px;
+    --small-swap-button-3-left: 1220px;
+    --small-swap-button-3-bottom: 680px;
+    --hidden-swap-button-1-left: 60px;
+    --hidden-swap-button-1-bottom: 310px;
+    --hidden-swap-button-2-left: 60px;
+    --hidden-swap-button-2-bottom: 110px;
+    --hidden-overlay-1-bottom: 300px;
+    --hidden-overlay-1-left: 50px;
+    --hidden-overlay-2-bottom: 100px;
+    --hidden-overlay-2-left: 50px;
+}
+
+.stacked_top.content21by9{
+    --grid-columns: [first-column] 0.1fr [second-column] 0.1fr [third-column] 0.1fr [third-column-end];
+    --grid-rows: [small-row] 0.5fr [main-row] 1.5fr;
+    --main-video-width: 1488px;
+    --main-video-height: 837px;
+    --small-video-width: 640px;
+    --small-video-height: 360px;
+    --main-overlay-width: 1478px;
+    --small-overlay-width: 630px;
+    --main-overlay-bottom: 100px;
+    --small-overlay-1-bottom: 915px;
+    --small-overlay-2-bottom: 915px;
+    --small-overlay-3-bottom: 915px;
+    --column-gap: 0.1rem;
+    --grid-padding-left: 12rem;
+    --main-swap-button-left: 1605px;
+    --main-swap-button-bottom: 700px;
+    --small-swap-button-1-left: 705px;
+    --small-swap-button-1-bottom: 1125px;
+    --small-swap-button-2-left: 1355px;
+    --small-swap-button-2-bottom: 1125px;
+    --small-swap-button-3-left: 2005px;
+    --small-swap-button-3-bottom: 1125px;
+    --hidden-swap-button-1-left: 235px;
+    --hidden-swap-button-1-bottom: 310px;
+    --hidden-swap-button-2-left: 235px;
+    --hidden-swap-button-2-bottom: 110px;
+    --hidden-overlay-1-bottom: 300px;
+    --hidden-overlay-1-left: 230px;
+    --hidden-overlay-2-bottom: 100px;
+    --hidden-overlay-2-left: 230px;
+}
+
+.stacked_top {
+    .carouselnav {
+        display: none;
+        position: absolute;
+    }
+}
+
+.stacked_top > .costreamVideoGrid {
+    display: grid;
+    grid-template-columns: var(--grid-columns);
+    grid-template-rows: var(--grid-rows);
+    column-gap: var(--column-gap);
+    align-content: center;
+    padding-left: var(--grid-padding-left);
+
+    .costream-overlay{
+        visibility: hidden;
+    }
+
+    .costream-visible.visible-slot-1{
+        width: var(--main-video-width);
+        height: var(--main-video-height);
+        grid-column-start: first-column;
+        grid-column-end: third-column-end;
+        grid-row: main-row;
+        margin: auto;
+    }
+
+    .costream-visible.visible-slot-1 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-overlay{
+        position: absolute;
+        visibility: visible;
+        width: var(--main-overlay-width);
+        height: 50px;
+        bottom: var(--main-overlay-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-1:hover > .costream-swap, .costream-visible.visible-slot-1 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--main-swap-button-bottom);
+        left: var(--main-swap-button-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-visible.visible-slot-2{
+        width: var(--small-video-width);
+        height: var(--small-video-height);
+        grid-column: first-column;
+        grid-row: small-row;
+        align-self: center;
+    }
+    .costream-visible.visible-slot-2 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-3{
+        width: var(--small-video-width);
+        height: var(--small-video-height);
+        grid-column: second-column;
+        grid-row: small-row;
+    }
+
+    .costream-visible.visible-slot-3 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-4{
+        width: var(--small-video-width);
+        height: var(--small-video-height);
+        grid-column: third-column;
+        grid-row: small-row;
+    }
+
+    .costream-visible.visible-slot-4 > .costream-swap{
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .costream-visible.visible-slot-2:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--small-overlay-width);
+        height: 50px;
+        bottom: var(--small-overlay-1-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    
+    .costream-visible.visible-slot-2:hover > .costream-swap, .costream-visible.visible-slot-2 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--small-swap-button-1-bottom);
+        left: var(--small-swap-button-1-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-visible.visible-slot-3:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--small-overlay-width);
+        height: 50px;
+        bottom: var(--small-overlay-2-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-3:hover > .costream-swap, .costream-visible.visible-slot-3 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--small-swap-button-2-bottom);
+        left: var(--small-swap-button-2-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-visible.visible-slot-4:hover > .costream-overlay{
+        visibility: visible;
+        position: absolute;
+        width: var(--small-overlay-width);
+        height: 50px;
+        bottom: var(--small-overlay-3-bottom);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-visible.visible-slot-4:hover > .costream-swap, .costream-visible.visible-slot-4 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--small-swap-button-3-bottom);
+        left: var(--small-swap-button-3-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden.hidden-slot-1 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-1-bottom);
+        left: var(--hidden-overlay-1-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    
+    .costream-hidden.hidden-slot-1:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-1-bottom);
+        left: var(--hidden-overlay-1-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+    .costream-hidden.hidden-slot-1:hover > .costream-swap, .costream-hidden.hidden-slot-1 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-1-bottom);
+        left: var(--hidden-swap-button-1-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2 > .costream-overlay {
+        position: absolute;
+        visibility: hidden;
+        bottom: var(--hidden-overlay-2-bottom);
+        left: var(--hidden-overlay-2-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            visibility: visible;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2:hover > .costream-overlay {
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-overlay-2-bottom);
+        left: var(--hidden-overlay-2-left);
+        border-radius: 25px;
+        margin-left: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 0.5rem;
+            vertical-align: text-bottom;
+        }
+
+        span {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            vertical-align: super;
+        }
+    }
+
+    .costream-hidden.hidden-slot-2:hover > .costream-swap, .costream-hidden.hidden-slot-2 > .costream-swap.costream-swap-from{
+        position: absolute;
+        visibility: visible;
+        bottom: var(--hidden-swap-button-2-bottom);
+        left: var(--hidden-swap-button-2-left);
+
+        button {
+            background-color: black;
+            color: white;
+            border-radius: 25%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .costream-swap-from-button {
+            background-color: blue;
+        }
+    }
+
+    .costream-hidden > video{
+        display:none;
+    }
+
+    .costream-hidden{
+        display:none;
+    }
+
+    .costream-swap{
+        visibility: hidden;
+    }
+
+}

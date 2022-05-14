@@ -11,6 +11,7 @@ defmodule Glimesh.Streams.Channel do
     belongs_to :subcategory, Glimesh.Streams.Subcategory, on_replace: :nilify
     belongs_to :streamer, Glimesh.Accounts.User, source: :user_id
     belongs_to :stream, Glimesh.Streams.Stream
+    belongs_to :costream, Glimesh.Streams.Costream
     has_many :streams, Glimesh.Streams.Stream
 
     field :title, :string, default: "Live Stream!"
@@ -35,6 +36,8 @@ defmodule Glimesh.Streams.Channel do
     field :emote_prefix, :string
 
     field :allow_hosting, :boolean, default: false
+    field :allow_costream, :boolean, default: false
+    field :use_costream_tags, :boolean, default: false
 
     # This is here temporarily as we add additional schema to handle it.
     field :streamloots_url, :string, default: nil
@@ -48,6 +51,9 @@ defmodule Glimesh.Streams.Channel do
 
     # This is used when searching for live channels that are live or hosted
     field :match_type, :string, virtual: true
+
+    field :costream_active, :boolean, default: false
+
 
     many_to_many :tags, Glimesh.Streams.Tag, join_through: "channel_tags", on_replace: :delete
 
@@ -292,4 +298,38 @@ defmodule Glimesh.Streams.Channel do
     |> maybe_put_subcategory(:subcategory, attrs)
     |> unique_constraint([:user_id])
   end
+
+  def change_costreaming_changeset(%Glimesh.Streams.Channel{} = channel, attrs \\ %{}) do
+    channel
+    |> cast(attrs, [:allow_costream, :use_costream_tags])
+    |> validate_required([:allow_costream, :use_costream_tags])
+  end
+
+  def update_costreaming(%Glimesh.Streams.Channel{} = channel, attrs \\ %{}) do
+    change_costreaming_changeset(channel, attrs)
+    |> Glimesh.Repo.update()
+  end
+
+  def start_costreaming_changeset(%Glimesh.Streams.Channel{} = channel, attrs \\ %{}) do
+    channel
+    |> cast(attrs, [:costream_active,
+      :title,
+      :category_id,
+      :subcategory_id,
+      :costream_id])
+    |> validate_length(:title, max: 250)
+    |> maybe_put_tags(:tags, attrs)
+    |> maybe_put_subcategory(:subcategory, attrs)
+  end
+
+  def start_costreaming(%Glimesh.Streams.Channel{} = channel, costream_id, attrs \\ %{}) do
+    start_costreaming_changeset(channel, Map.merge(attrs, %{costream_id: costream_id, costream_active: true}))
+    |> Glimesh.Repo.update()
+  end
+
+  def stop_costreaming(%Glimesh.Streams.Channel{} = channel, attrs \\ %{}) do
+    start_costreaming_changeset(channel, Map.merge(attrs, %{costream_id: nil, costream_active: false}))
+    |> Glimesh.Repo.update()
+  end
+
 end
