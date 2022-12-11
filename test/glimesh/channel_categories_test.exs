@@ -105,22 +105,12 @@ defmodule Glimesh.ChannelCategoriesTest do
       assert Enum.member?(Enum.map(ChannelCategories.list_tags(), fn x -> x.name end), tag.name)
     end
 
-    test "list_tags/1 returns all tags in a category" do
-      %Glimesh.Streams.Category{id: cat_id} = ChannelCategories.get_category("gaming")
-      tag = tag_fixture(%{category_id: cat_id})
-
-      assert Enum.member?(
-               Enum.map(ChannelCategories.list_tags(cat_id), fn x -> x.name end),
-               tag.name
-             )
-    end
-
     test "list_live_tags/1 returns only live tags" do
       streamer = streamer_fixture()
       category_id = streamer.channel.category_id
 
-      offline_tag = tag_fixture(%{name: "Offline Tag", category_id: category_id})
-      live_tag = tag_fixture(%{name: "Online Tag", category_id: category_id})
+      offline_tag = tag_fixture(%{name: "Offline Tag"})
+      live_tag = tag_fixture(%{name: "Online Tag"})
 
       {:ok, channel} =
         streamer.channel
@@ -350,16 +340,14 @@ defmodule Glimesh.ChannelCategoriesTest do
     old_tech_subcats =
       insert_list(5, :subcategory, %{name: Faker.Beer.malt(), category: tech_cat})
 
-    old_game_tags = insert_list(10, :tag, %{name: Faker.Food.dish(), category: gaming_cat})
-    old_game_tags_ids = Enum.map(old_game_tags, fn k -> k.id end)
-    old_tech_tags = insert_list(10, :tag, %{name: Faker.Cat.breed(), category: tech_cat})
-    old_tech_tags_ids = Enum.map(old_tech_tags, fn k -> k.id end)
+    old_tags = insert_list(10, :tag, %{name: Faker.Food.dish()})
+    old_tags_ids = Enum.map(old_tags, fn k -> k.id end)
 
     gaming_streamer =
       AccountsFixtures.streamer_fixture(%{}, %{
         category_id: gaming_cat.id,
         subcategory_id: Enum.at(old_game_subcats, 4).id,
-        tags: Enum.slice(old_game_tags, 7, 2),
+        tags: Enum.slice(old_tags, 7, 2),
         language: "en"
       })
 
@@ -367,7 +355,7 @@ defmodule Glimesh.ChannelCategoriesTest do
       AccountsFixtures.streamer_fixture(%{}, %{
         category_id: tech_cat.id,
         subcategory_id: Enum.at(old_tech_subcats, 4).id,
-        tags: Enum.slice(old_tech_tags, 7, 2),
+        tags: Enum.slice(old_tags, 7, 2),
         language: "en"
       })
 
@@ -376,7 +364,7 @@ defmodule Glimesh.ChannelCategoriesTest do
         channel_id: gaming_streamer.channel.id,
         category_id: gaming_cat.id,
         subcategory_id: Enum.at(old_game_subcats, 2).id,
-        category_tags: Enum.slice(old_game_tags_ids, 0, 3),
+        category_tags: Enum.slice(old_tags_ids, 0, 3),
         started_at: NaiveDateTime.utc_now(),
         ended_at: NaiveDateTime.utc_now()
       })
@@ -386,7 +374,7 @@ defmodule Glimesh.ChannelCategoriesTest do
         channel_id: gaming_streamer.channel.id,
         category_id: gaming_cat.id,
         subcategory_id: Enum.at(old_game_subcats, 3).id,
-        category_tags: Enum.slice(old_game_tags_ids, 3, 3),
+        category_tags: Enum.slice(old_tags_ids, 3, 3),
         started_at: NaiveDateTime.utc_now(),
         ended_at: NaiveDateTime.utc_now()
       })
@@ -396,7 +384,7 @@ defmodule Glimesh.ChannelCategoriesTest do
         channel_id: tech_streamer.channel.id,
         category_id: tech_cat.id,
         subcategory_id: Enum.at(old_tech_subcats, 2).id,
-        category_tags: Enum.slice(old_tech_tags_ids, 0, 3),
+        category_tags: Enum.slice(old_tags_ids, 0, 3),
         started_at: NaiveDateTime.utc_now(),
         ended_at: NaiveDateTime.utc_now()
       })
@@ -406,7 +394,7 @@ defmodule Glimesh.ChannelCategoriesTest do
         channel_id: tech_streamer.channel.id,
         category_id: tech_cat.id,
         subcategory_id: Enum.at(old_tech_subcats, 3).id,
-        category_tags: Enum.slice(old_tech_tags_ids, 3, 3),
+        category_tags: Enum.slice(old_tags_ids, 3, 3),
         started_at: NaiveDateTime.utc_now(),
         ended_at: NaiveDateTime.utc_now()
       })
@@ -452,54 +440,7 @@ defmodule Glimesh.ChannelCategoriesTest do
       refute Enum.any?(recent_game_subcats, fn x -> tech_stream_two.subcategory_id == x.id end)
     end
 
-    test "shows most recent tags", %{
-      gaming_streamer: gaming_streamer,
-      tech_streamer: tech_streamer,
-      old_game_stream_one: game_stream_one,
-      old_game_stream_two: game_stream_two,
-      old_tech_stream_one: tech_stream_one,
-      old_tech_stream_two: tech_stream_two
-    } do
-      recent_game_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(gaming_streamer.channel)
-
-      recent_tech_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(tech_streamer.channel)
-
-      assert Enum.all?(game_stream_one.category_tags, fn x ->
-               Enum.find_value(recent_game_tags, false, fn y -> y.id == x end)
-             end)
-
-      refute Enum.all?(game_stream_one.category_tags, fn x ->
-               Enum.find_value(recent_tech_tags, false, fn y -> y.id == x end)
-             end)
-
-      assert Enum.all?(game_stream_two.category_tags, fn x ->
-               Enum.find_value(recent_game_tags, false, fn y -> y.id == x end)
-             end)
-
-      refute Enum.all?(game_stream_two.category_tags, fn x ->
-               Enum.find_value(recent_tech_tags, false, fn y -> y.id == x end)
-             end)
-
-      assert Enum.all?(tech_stream_one.category_tags, fn x ->
-               Enum.find_value(recent_tech_tags, false, fn y -> y.id == x end)
-             end)
-
-      refute Enum.all?(tech_stream_one.category_tags, fn x ->
-               Enum.find_value(recent_game_tags, false, fn y -> y.id == x end)
-             end)
-
-      assert Enum.all?(tech_stream_two.category_tags, fn x ->
-               Enum.find_value(recent_tech_tags, false, fn y -> y.id == x end)
-             end)
-
-      refute Enum.all?(tech_stream_two.category_tags, fn x ->
-               Enum.find_value(recent_game_tags, false, fn y -> y.id == x end)
-             end)
-    end
-
-    test "does not show duplicate recent subcategories or tags", %{
+    test "does not show duplicate recent subcategories", %{
       gaming_streamer: gaming_streamer,
       tech_streamer: tech_streamer,
       old_game_stream_one: game_stream_one,
@@ -541,23 +482,9 @@ defmodule Glimesh.ChannelCategoriesTest do
       assert Enum.count(recent_tech_subcats, fn x ->
                old_tech_stream_duplicate.subcategory_id == x.id
              end) == 1
-
-      recent_game_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(gaming_streamer.channel)
-
-      recent_tech_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(tech_streamer.channel)
-
-      assert Enum.count(recent_game_tags, fn x ->
-               Enum.find_value(old_game_stream_duplicate.category_tags, fn y -> y == x.id end)
-             end) == Enum.count(old_game_stream_duplicate.category_tags)
-
-      assert Enum.count(recent_tech_tags, fn x ->
-               Enum.find_value(old_tech_stream_duplicate.category_tags, fn y -> y == x.id end)
-             end) == Enum.count(old_tech_stream_duplicate.category_tags)
     end
 
-    test "recent subcategories and tags does not include the channel-level (last used) subcategory or tags",
+    test "recent subcategories does not include the channel-level (last used) subcategory",
          %{
            gaming_streamer: gaming_streamer,
            tech_streamer: tech_streamer,
@@ -593,26 +520,12 @@ defmodule Glimesh.ChannelCategoriesTest do
       recent_tech_subcats =
         ChannelCategories.get_channel_recent_subcategories_for_category(tech_streamer_channel)
 
-      recent_game_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(gaming_streamer_channel)
-
-      recent_tech_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(tech_streamer_channel)
-
       refute Enum.find_value(recent_game_subcats, fn x ->
                gaming_streamer_channel.subcategory_id == x.id
              end)
 
       refute Enum.find_value(recent_tech_subcats, fn x ->
                tech_streamer_channel.subcategory_id == x.id
-             end)
-
-      refute Enum.find_value(recent_game_tags, fn x ->
-               Enum.find_value(gaming_streamer_channel.tags, fn y -> y == x.id end)
-             end)
-
-      refute Enum.find_value(recent_tech_tags, fn x ->
-               Enum.find_value(tech_streamer_channel.tags, fn y -> y == x.id end)
              end)
     end
 
@@ -642,45 +555,6 @@ defmodule Glimesh.ChannelCategoriesTest do
       refute Enum.any?(recent_game_subcats, fn x -> game_stream_two.subcategory_id == x.id end)
       refute Enum.any?(recent_tech_subcats, fn x -> tech_stream_one.subcategory_id == x.id end)
       refute Enum.any?(recent_tech_subcats, fn x -> tech_stream_two.subcategory_id == x.id end)
-    end
-
-    test "no recent tags if no previous streams in category", %{
-      gaming_streamer: gaming_streamer,
-      tech_streamer: tech_streamer,
-      old_game_stream_one: game_stream_one,
-      old_game_stream_two: game_stream_two,
-      old_tech_stream_one: tech_stream_one,
-      old_tech_stream_two: tech_stream_two
-    } do
-      art_cat = ChannelCategories.get_category("art")
-
-      recent_game_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(
-          gaming_streamer.channel,
-          "#{art_cat.id}"
-        )
-
-      recent_tech_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(
-          tech_streamer.channel,
-          "#{art_cat.id}"
-        )
-
-      refute Enum.all?(game_stream_one.category_tags, fn x ->
-               Enum.find_value(recent_game_tags, false, fn y -> y.id == x end)
-             end)
-
-      refute Enum.all?(game_stream_two.category_tags, fn x ->
-               Enum.find_value(recent_game_tags, false, fn y -> y.id == x end)
-             end)
-
-      refute Enum.all?(tech_stream_one.category_tags, fn x ->
-               Enum.find_value(recent_tech_tags, false, fn y -> y.id == x end)
-             end)
-
-      refute Enum.all?(tech_stream_two.category_tags, fn x ->
-               Enum.find_value(recent_tech_tags, false, fn y -> y.id == x end)
-             end)
     end
 
     test "should still show recent subcategories if no channel subcategory set", %{
@@ -714,58 +588,6 @@ defmodule Glimesh.ChannelCategoriesTest do
       assert Enum.any?(recent_game_subcats, fn x -> game_stream_two.subcategory_id == x.id end)
       assert Enum.any?(recent_tech_subcats, fn x -> tech_stream_one.subcategory_id == x.id end)
       assert Enum.any?(recent_tech_subcats, fn x -> tech_stream_two.subcategory_id == x.id end)
-    end
-
-    test "should still show most recent tags if no channel tags set", %{
-      gaming_streamer: gaming_streamer,
-      tech_streamer: tech_streamer,
-      old_game_stream_one: game_stream_one,
-      old_game_stream_two: game_stream_two,
-      old_tech_stream_one: tech_stream_one,
-      old_tech_stream_two: tech_stream_two
-    } do
-      gaming_streamer.channel
-      |> changeset()
-      |> put_assoc(:tags, nil)
-      |> Repo.update()
-
-      tech_streamer.channel
-      |> changeset()
-      |> put_assoc(:tags, nil)
-      |> Repo.update()
-
-      gaming_streamer_channel = ChannelLookups.get_channel(gaming_streamer.channel.id)
-      tech_streamer_channel = ChannelLookups.get_channel(tech_streamer.channel.id)
-
-      recent_game_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(gaming_streamer_channel)
-
-      recent_tech_tags =
-        ChannelCategories.get_channel_recent_tags_for_category(tech_streamer_channel)
-
-      assert Enum.count(recent_game_tags) ==
-               Enum.count(game_stream_one.category_tags) +
-                 Enum.count(game_stream_two.category_tags)
-
-      assert Enum.count(recent_tech_tags) ==
-               Enum.count(tech_stream_one.category_tags) +
-                 Enum.count(tech_stream_two.category_tags)
-
-      assert Enum.all?(game_stream_one.category_tags, fn x ->
-               Enum.find_value(recent_game_tags, false, fn y -> y.id == x end)
-             end)
-
-      assert Enum.all?(game_stream_two.category_tags, fn x ->
-               Enum.find_value(recent_game_tags, false, fn y -> y.id == x end)
-             end)
-
-      assert Enum.all?(tech_stream_one.category_tags, fn x ->
-               Enum.find_value(recent_tech_tags, false, fn y -> y.id == x end)
-             end)
-
-      assert Enum.all?(tech_stream_two.category_tags, fn x ->
-               Enum.find_value(recent_tech_tags, false, fn y -> y.id == x end)
-             end)
     end
   end
 end

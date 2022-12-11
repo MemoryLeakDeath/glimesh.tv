@@ -129,13 +129,7 @@ defmodule Glimesh.ChannelCategories do
 
   """
   def list_tags do
-    Repo.replica().all(from t in Tag, order_by: [desc: :count_usage]) |> Repo.preload(:category)
-  end
-
-  def list_tags(category_id) do
-    Repo.replica().all(
-      from t in Tag, where: t.category_id == ^category_id, order_by: [desc: :count_usage]
-    )
+    Repo.replica().all(from t in Tag, order_by: [desc: :count_usage])
   end
 
   def list_tags_for_channel(%Channel{} = channel) do
@@ -164,7 +158,7 @@ defmodule Glimesh.ChannelCategories do
         join: c in Channel,
         join: ct in "channel_tags",
         on: ct.tag_id == t.id and ct.channel_id == c.id,
-        where: c.status == "live" and t.category_id == ^category_id,
+        where: c.status == "live" and c.category_id == ^category_id,
         order_by: [desc: :count_usage],
         group_by: t.id
     )
@@ -276,7 +270,7 @@ defmodule Glimesh.ChannelCategories do
     |> Repo.insert(
       returning: true,
       on_conflict: [set: [updated_at: timestamp]],
-      conflict_target: :identifier
+      conflict_target: :slug
     )
   end
 
@@ -494,34 +488,5 @@ defmodule Glimesh.ChannelCategories do
     query
     |> where(^exclude_last_subcat)
     |> Repo.replica().all()
-  end
-
-  def get_channel_recent_tags_for_category(%Channel{} = channel, category_id \\ nil) do
-    category = if category_id, do: String.to_integer(category_id), else: channel.category_id
-
-    Repo.replica().all(
-      from s in Stream,
-        join:
-          fragment(
-            "(select distinct on (unnest(streams.category_tags)) unnest(streams.category_tags) as cat_tags, id as stream_id
-                       from streams where streams.ended_at is not null
-                       and streams.channel_id = ? and streams.category_id = ?::integer
-                       limit 11)",
-            ^channel.id,
-            ^category
-          ),
-        as: :used_tags,
-        on: as(:used_tags).stream_id == s.id,
-        join: t in Tag,
-        on: t.id == as(:used_tags).cat_tags,
-        where:
-          fragment(
-            "? not in (select tag_id from channel_tags where channel_id = ?)",
-            t.id,
-            ^channel.id
-          ),
-        order_by: [desc: s.started_at],
-        select: t
-    )
   end
 end

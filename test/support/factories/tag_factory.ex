@@ -11,7 +11,6 @@ defmodule Glimesh.TagFactory do
         %Glimesh.Streams.Tag{
           name: Faker.Pizza.cheese(),
           slug: Faker.Internet.slug(),
-          category: build(:category)
         }
       end
     end

@@ -2,17 +2,14 @@ defmodule Glimesh.Repo.Migrations.MergeTagsAndDropCategoryTies do
   use Ecto.Migration
 
   def up do
-    create_data_migration_temp_table = "SELECT * INTO tag_migration FROM tags"
-    create_data_migaration_channel_temp_table = "SELECT * INTO channel_tags_migration FROM channel_tags"
-    create_data_migration_stream_temp_table = "SELECT id, unnest(category_tags) AS category_tags INTO streams_tag_migration FROM streams"
-    execute(create_data_migration_temp_table)
-    execute(create_data_migration_channel_temp_table)
-    execute(create_data_migration_stream_temp_table)
+    drop_migration_tables()
+    create_migration_tables()
 
     alter table(:tags) do
-      remove :identifier
-      remove :category_id
+      remove_if_exists(:identifier, :string)
+      remove_if_exists(:category_id, :integer)
     end
+    create unique_index(:tags, [:slug])
 
     truncate_table = "TRUNCATE TABLE tags CASCADE"
     execute(truncate_table)
@@ -57,6 +54,13 @@ defmodule Glimesh.Repo.Migrations.MergeTagsAndDropCategoryTies do
       "
     execute(move_and_merge_stream_tag_data)
 
+    drop_migration_tables()
+
+  end
+
+  def down, do: true
+
+  defp drop_migration_tables do
     drop_data_migration_temp_table = "DROP TABLE IF EXISTS tag_migration"
     drop_data_migration_channel_temp_table = "DROP TABLE IF EXISTS channel_tags_migration"
     drop_data_migration_stream_temp_table = "DROP TABLE IF EXISTS streams_tag_migration"
@@ -65,5 +69,12 @@ defmodule Glimesh.Repo.Migrations.MergeTagsAndDropCategoryTies do
     execute(drop_data_migration_stream_temp_table)
   end
 
-  def down, do: true
+  defp create_migration_tables do
+    create_data_migration_temp_table = "SELECT * INTO tag_migration FROM tags"
+    create_data_migaration_channel_temp_table = "SELECT * INTO channel_tags_migration FROM channel_tags"
+    create_data_migration_stream_temp_table = "SELECT id, unnest(category_tags) AS category_tags INTO streams_tag_migration FROM streams"
+    execute(create_data_migration_temp_table)
+    execute(create_data_migaration_channel_temp_table)
+    execute(create_data_migration_stream_temp_table)
+  end
 end

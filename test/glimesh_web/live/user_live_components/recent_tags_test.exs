@@ -15,11 +15,7 @@ defmodule GlimeshWeb.UserLive.Components.RecentTagsTest do
     end)
   end
 
-  defp create_some_dummy_tags(categoryId) do
-    Enum.map(0..9, fn x -> %Tag{id: x, name: Faker.Food.dish(), category: categoryId} end)
-  end
-
-  describe "recent categories and tags" do
+  describe "recent categories" do
     setup [:register_and_log_in_user]
 
     test "shows recent subcategories" do
@@ -53,39 +49,6 @@ defmodule GlimeshWeb.UserLive.Components.RecentTagsTest do
       assert html =~ "data-tagname=\"#{Enum.random(tech_subcategories).name}\""
       assert html =~ "data-operation=\"replace\""
       assert html =~ "data-fieldid=\"category-selector\""
-    end
-
-    test "shows recent tags" do
-      gaming_cat = ChannelCategories.get_category("gaming")
-      tech_cat = ChannelCategories.get_category("tech")
-
-      gaming_tags = create_some_dummy_tags(gaming_cat)
-
-      html =
-        render_component(@component, %{
-          operation: "append",
-          fieldid: "tag-selector",
-          recent_tags: gaming_tags
-        })
-
-      assert html =~ "recent-tag-tag-selector-#{Enum.random(gaming_tags).id}"
-      assert html =~ "data-tagname=\"#{Enum.random(gaming_tags).name}\""
-      assert html =~ "data-operation=\"append\""
-      assert html =~ "data-fieldid=\"tag-selector\""
-
-      tech_tags = create_some_dummy_tags(tech_cat)
-
-      html =
-        render_component(@component, %{
-          operation: "append",
-          fieldid: "tag-selector",
-          recent_tags: tech_tags
-        })
-
-      assert html =~ "recent-tag-tag-selector-#{Enum.random(tech_tags).id}"
-      assert html =~ "data-tagname=\"#{Enum.random(tech_tags).name}\""
-      assert html =~ "data-operation=\"append\""
-      assert html =~ "data-fieldid=\"tag-selector\""
     end
   end
 end

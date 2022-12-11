@@ -247,9 +247,8 @@ defmodule Glimesh.Api.ChannelResolver do
 
   # Moderations
 
-  def get_tags(args, %{source: category}) do
+  def get_tags(args, _) do
     Streams.Tag
-    |> where(category_id: ^category.id)
     |> order_by(:id)
     |> Api.connection_from_query_with_count(args)
   end

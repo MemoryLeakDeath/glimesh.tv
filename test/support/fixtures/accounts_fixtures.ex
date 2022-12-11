@@ -26,13 +26,10 @@ defmodule Glimesh.AccountsFixtures do
   end
 
   def tag_fixture(tag_attrs \\ %{}) do
-    %Glimesh.Streams.Category{id: cat_id} = Glimesh.ChannelCategories.get_category("gaming")
-
     {:ok, tag} =
       Glimesh.ChannelCategories.create_tag(
         Map.merge(
           %{
-            category_id: cat_id,
             name: "Chill Stream"
           },
           tag_attrs

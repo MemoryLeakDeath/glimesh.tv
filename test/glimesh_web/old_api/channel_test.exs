@@ -100,10 +100,6 @@ defmodule GlimeshWeb.Api.ChannelTest do
         name
         backgroundImageUrl
       }
-
-      tags {
-        name
-      }
     }
   }
   """
@@ -139,11 +135,6 @@ defmodule GlimeshWeb.Api.ChannelTest do
                      %{
                        "name" => "World of Warcraft",
                        "backgroundImageUrl" => nil
-                     }
-                   ],
-                   "tags" => [
-                     %{
-                       "name" => "Chill Stream"
                      }
                    ]
                  }

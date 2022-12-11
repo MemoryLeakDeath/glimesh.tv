@@ -125,12 +125,6 @@
               ) %>
               <%= error_tag(f, :tags) %>
             </div>
-            <%= live_component(
-              GlimeshWeb.UserLive.Components.RecentTags,
-              fieldid: "tag-selector-#{@category.id}",
-              recent_tags: @recent_tags,
-              operation: "append"
-            ) %>
 
             <button type="submit" class="btn btn-primary btn-block btn-lg mt-3">
               <%= gettext("Save") %>

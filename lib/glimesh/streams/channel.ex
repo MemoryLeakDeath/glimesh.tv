@@ -232,7 +232,6 @@ defmodule Glimesh.Streams.Channel do
         Glimesh.ChannelCategories.upsert_tag(
           %Tag{},
           %{
-            category_id: input["category_id"],
             name: input["value"]
           }
         )
