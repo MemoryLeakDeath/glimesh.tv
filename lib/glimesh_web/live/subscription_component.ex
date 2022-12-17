@@ -14,6 +14,7 @@ defmodule GlimeshWeb.SubscriptionComponent do
       data-stripe-payment-method={@stripe_payment_method}
       data-stripe-product-id={@stripe_product_id}
       data-stripe-price-id={@stripe_price_id}
+      target="_blank"
     >
       <%= if @stripe_payment_method do %>
         <p><%= gettext("Payment method already attached!") %></p>
