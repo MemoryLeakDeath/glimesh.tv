@@ -39,10 +39,15 @@ defmodule GlimeshWeb.ChatLive.Index do
           username: user.username,
           avatar: Glimesh.Avatar.url({user.avatar, user}, :original),
           user_id: user.id,
+          displayname: user.displayname,
+          streamer: channel.user_id == user.id,
           size: 48
         }
       )
     end
+
+    moderator_permissions = Chat.get_moderator_permissions(channel, session["user"])
+    has_at_least_one_mod_permission = Enum.any?(moderator_permissions, fn {_permission, value} -> value end)
 
     new_socket =
       socket
@@ -57,7 +62,8 @@ defmodule GlimeshWeb.ChatLive.Index do
       |> assign(:channel, channel)
       |> assign(:user, session["user"])
       |> assign(:theme, Map.get(session, "site_theme", "dark"))
-      |> assign(:permissions, Chat.get_moderator_permissions(channel, session["user"]))
+      |> assign(:permissions, moderator_permissions)
+      |> assign(:has_a_mod_permission, has_at_least_one_mod_permission)
       |> assign(:chat_messages, list_chat_messages(channel))
       |> assign(:chat_message, %ChatMessage{})
       |> assign(:show_timestamps, user_preferences.show_timestamps)

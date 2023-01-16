@@ -290,6 +290,7 @@ defmodule GlimeshWeb.Router do
     live "/:username/profile/followers", UserLive.Followers, :followers
     live "/:username/profile/following", UserLive.Followers, :following
     live "/:username/chat", ChatLive.PopOut, :index
+    live "/:username/viewers", ChatLive.ViewersPopOut, :index
   end
 
   alias GlimeshWeb.Router.Helpers, as: Routes

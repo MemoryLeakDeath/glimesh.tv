@@ -1,0 +1,149 @@
+<%= if live_flash(@flash, :viewer_info) do %>
+  <p
+    class="alert alert-success"
+    role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="viewer_info"
+  >
+    <%= live_flash(@flash, :viewer_info) %>
+  </p>
+<% end %>
+<div id="viewer-panel-div" class="container">
+  <div class="m-auto justify-content-center d-flex">
+    <h2><%= gettext("Viewers") %></h2>
+  </div>
+  <div role="navigation">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a href="#active-viewers-table" class="nav-link active" id="active-viewers-tab" data-toggle="tab" data-target="#active-viewers-table" role="tab">
+          <%= gettext("Active") %>
+        </a>
+      </li>
+      <%= if @show_lurkers do %>
+        <li class="nav-item" role="presentation">
+          <a href="#lurker-viewers-table" class="nav-link" id="lurker-viewers-tab" data-toggle="tab" data-target="#lurker-viewers-table" role="tab">
+            <%= gettext("Lurkers") %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="tab-content">
+    <div id="active-viewers-table" class="tab-pane fade show active">
+      <table class="table">
+        <thead style="background-color: var(--input-bg-color);">
+          <th><%= gettext("User") %></th>
+          <th><%= gettext("Actions") %></th>
+        </thead>
+        <tbody>
+          <%= if @active_chatters do %>
+            <%= for active_user <- @active_chatters do %>
+              <tr>
+                <td>
+                  <%= render_channel_badge(active_user, Map.get(@metadata, active_user[:user_id])) %>
+                  <%= render_username_and_avatar(active_user, Map.get(@metadata, active_user[:user_id])) %>
+                </td>
+                <td>
+                  <%= if Map.get(@permissions, :can_short_timeout, false) do %>
+                    <i
+                      class="short-timeout fas fa-stopwatch fa-fw chat-mod-icon"
+                      phx-click="short_timeout_user"
+                      phx-value-user={active_user[:username]}
+                      data-toggle="tooltip"
+                      title={gettext("Timeout user for 5 minutes.")}
+                    >
+                    </i>
+                  <% end %>
+                  <%= if Map.get(@permissions, :can_long_timeout, false)  do %>
+                    <i
+                      class="long-timeout fas fa-clock fa-fw chat-mod-icon"
+                      phx-click="long_timeout_user"
+                      phx-value-user={active_user[:username]}
+                      data-toggle="tooltip"
+                      title={gettext("Timeout user for 15 minutes.")}
+                    >
+                    </i>
+                  <% end %>
+                  <%= if Map.get(@permissions, :can_ban, false)  do %>
+                    <i
+                      class="ban fas fa-gavel fa-fw chat-mod-icon"
+                      phx-click="ban_user"
+                      phx-value-user={active_user[:username]}
+                      data-confirm={
+                        gettext("Are you sure you wish to permanently ban %{username}?",
+                          username: active_user[:displayname]
+                        )
+                      }
+                      data-toggle="tooltip"
+                      title={gettext("Ban user from channel.")}
+                    >
+                    </i>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div id="lurker-viewers-table" class="tab-pane fade">
+      <%= if @show_lurkers do %>
+        <table class="table">
+          <thead style="background-color: var(--input-bg-color);">
+            <th><%= gettext("User") %></th>
+            <th><%= gettext("Actions") %></th>
+          </thead>
+          <tbody>
+            <%= if @lurker_chatters do %>
+              <%= for lurker_user <- @lurker_chatters do %>
+                <tr>
+                  <td>
+                    <%= render_channel_badge(lurker_user, Map.get(@metadata, lurker_user[:user_id])) %>
+                    <%= render_username_and_avatar(lurker_user, Map.get(@metadata, lurker_user[:user_id])) %>
+                  </td>
+                  <td>
+                    <%= if Map.get(@permissions, :can_short_timeout, false) do %>
+                      <i
+                        class="short-timeout fas fa-stopwatch fa-fw chat-mod-icon"
+                        phx-click="short_timeout_user"
+                        phx-value-user={lurker_user[:username]}
+                        data-toggle="tooltip"
+                        title={gettext("Timeout user for 5 minutes.")}
+                      >
+                      </i>
+                    <% end %>
+                    <%= if Map.get(@permissions, :can_long_timeout, false)  do %>
+                      <i
+                        class="long-timeout fas fa-clock fa-fw chat-mod-icon"
+                        phx-click="long_timeout_user"
+                        phx-value-user={lurker_user[:username]}
+                        data-toggle="tooltip"
+                        title={gettext("Timeout user for 15 minutes.")}
+                      >
+                      </i>
+                    <% end %>
+                    <%= if Map.get(@permissions, :can_ban, false)  do %>
+                      <i
+                        class="ban fas fa-gavel fa-fw chat-mod-icon"
+                        phx-click="ban_user"
+                        phx-value-user={lurker_user[:username]}
+                        data-confirm={
+                          gettext("Are you sure you wish to permanently ban %{username}?",
+                            username: lurker_user[:displayname]
+                          )
+                        }
+                        data-toggle="tooltip"
+                        title={gettext("Ban user from channel.")}
+                      >
+                      </i>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>

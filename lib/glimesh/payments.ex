@@ -12,7 +12,7 @@ defmodule Glimesh.Payments do
   alias Glimesh.Payments.Subscription
   alias Glimesh.Payments.SubscriptionInvoice
   alias Glimesh.Repo
-  alias Glimesh.Streams.Channel
+  alias Glimesh.Streams.{Channel, ChannelModerator}
 
   def get_platform_sub_supporter_product_id,
     do: get_stripe_config(:platform_sub_supporter_product_id)
@@ -617,6 +617,36 @@ defmodule Glimesh.Payments do
     Repo.exists?(
       from s in Subscription,
         where: s.user_id == ^user.id and s.is_active == true and s.streamer_id == ^channel.user_id
+    )
+  end
+
+  def get_user_subscription_metadata_query(%Channel{} = channel, userids) do
+    from(u in User,
+      left_join: s in Subscription,
+      on: u.id == s.user_id,
+      left_join: ps in Subscription,
+      on: s.user_id == ps.user_id
+      and ps.is_active == true
+      and is_nil(ps.streamer_id)
+      and ps.stripe_product_id == ^get_platform_sub_supporter_product_id(),
+      left_join: pf in Subscription,
+      on: s.user_id == pf.user_id
+      and pf.is_active == true
+      and is_nil(pf.streamer_id)
+      and pf.stripe_product_id == ^get_platform_sub_founder_product_id(),
+      left_join: cs in Subscription,
+      on: s.user_id == cs.user_id
+      and cs.is_active == true
+      and cs.streamer_id == ^channel.streamer_id,
+      left_join: cm in ChannelModerator,
+      on: s.user_id == cm.user_id
+      and cm.channel_id == ^channel.id,
+      where: u.id in ^userids,
+      select: %{user: u,
+      platform_supporter: ps.id,
+      platform_founder: pf.id,
+      channel_subscriber: cs.id,
+      channel_moderator: cm.id}
     )
   end
 

@@ -235,6 +235,34 @@ defmodule Glimesh.Chat do
     |> Enum.reverse()
   end
 
+  def get_chatter_details(%Channel{} = channel, userids) do
+    Glimesh.Payments.get_user_subscription_metadata_query(channel, userids)
+    |> join(:inner, [u], m in ChatMessage, on: u.id == m.user_id)
+    |> where([m], m.channel_id == ^channel.id)
+    |> order_by([m], [desc: m.inserted_at])
+    |> Repo.replica().all()
+  end
+
+  def get_active_chatters_ids(%Channel{} = channel, minutes \\ 15) do
+    timeframe = NaiveDateTime.add(NaiveDateTime.utc_now(), (-1 * minutes * 60), :second)
+
+    from(m in ChatMessage,
+      where: m.inserted_at >= ^timeframe,
+      where: m.channel_id == ^channel.id,
+      select: m.user_id
+    )
+    |> Repo.replica().all()
+  end
+
+  def get_inactive_chatters_ids(%Channel{} = channel, limit \\ 100) do
+    from(m in ChatMessage,
+      where: m.channel_id == ^channel.id,
+      limit: ^limit,
+      select: m.user_id
+    )
+    |> Repo.replica().all()
+  end
+
   @doc """
   Returns a list of all chat_messages in a channel
   """
@@ -488,4 +516,5 @@ defmodule Glimesh.Chat do
       chat_message.id
     )
   end
+
 end

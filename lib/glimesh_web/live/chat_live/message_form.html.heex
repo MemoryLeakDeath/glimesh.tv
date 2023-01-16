@@ -71,6 +71,23 @@
             <%= gettext("Pop-out Chat") %>
           </a>
           <%= if @user do %>
+            <%= if @has_a_mod_permission do %>
+              <a
+                class="dropdown-item"
+                href="#"
+                onclick={
+                  "window.open('" <>
+                    Routes.chat_viewers_pop_out_url(
+                      @socket,
+                      :index,
+                      @channel_username
+                    ) <> "', '_blank',
+                                'width=400,height=600,location=no,menubar=no,toolbar=no')"
+                }
+              >
+                <%= gettext("Pop-out Viewer List") %>
+              </a>
+            <% end %>
             <a
               id="toggle-timestamps"
               class="dropdown-item"

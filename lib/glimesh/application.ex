@@ -23,12 +23,8 @@ defmodule Glimesh.Application do
       Glimesh.Presence,
       # Start the Endpoint (http/https)
       GlimeshWeb.Endpoint,
-      {ConCache,
-       [
-         name: Glimesh.QueryCache.name(),
-         ttl_check_interval: :timer.seconds(5),
-         global_ttl: :timer.seconds(30)
-       ]},
+      con_cache_child_spec(Glimesh.QueryCache.name()),
+      con_cache_child_spec(Glimesh.ChatUserDetailsCache.name(), 900),
       {Absinthe.Subscription, GlimeshWeb.Endpoint}
     ]
 
@@ -45,5 +41,18 @@ defmodule Glimesh.Application do
   def config_change(changed, _new, removed) do
     GlimeshWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  def con_cache_child_spec(name, ttl \\ 30) do
+    Supervisor.child_spec(
+      {ConCache,
+        [
+          name: name,
+          ttl_check_interval: :timer.seconds(5),
+          global_ttl: :timer.seconds(ttl)
+        ]
+      },
+      id: {ConCache, name}
+    )
   end
 end
